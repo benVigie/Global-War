@@ -1,0 +1,73 @@
+
+#loginContainer {
+	width: 100%;
+	text-align: center;
+}
+#login-logo {
+	width: 500px;
+	margin-top: 10%;
+	margin-bottom: 30px;
+}
+#loginWrapper {
+	width: 240px;
+	position: relative;
+	left: 50%;
+	top: 50%;
+	margin: 0 0 0 -120px;
+	text-align: center;
+	-moz-perspective: 800px;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#loginWrapper input[type=text], #loginWrapper input[type=password] {
+	font-size: 11px;
+	color: #858585;
+	box-shadow: 0 0 0px 2px #ebebeb;
+	-webkit-box-shadow: 0 0 0px 2px #ebebeb;
+	-moz-box-shadow: 0 0 0px 2px #ebebeb;
+	padding: 7px 27px 7px 9px;
+	border: 1px solid #d7d7d7;
+	width: 200px;
+	display: inline-block;
+	margin-top: 15px;
+}
+.loginUsername { background: #fbfbfb url(../images/icons/loginUsername.png) no-repeat 213px 7px; }
+.loginPassword { background: #fbfbfb url(../images/icons/loginLock.png) no-repeat 214px 7px; }
+.loginEmail { background: #fbfbfb url(../images/icons/loginEmail.png) no-repeat 213px 7px; }
+
+#newAccount{ z-index:1; opacity:0; filter: alpha(opacity=0); -moz-transform:rotateY(180deg); -webkit-transform:rotateY(180deg); transform:rotateY(180deg); }
+.flipped #login{ opacity:0; filter: alpha(opacity=0); -moz-transform:rotateY(-180deg); -webkit-transform:rotateY(-180deg); transform:rotateY(-180deg); }
+#loginWrapper.flipped #newAccount{ opacity:1; filter: alpha(opacity=100); -moz-transform:rotateY(0deg); -webkit-transform:rotateY(0deg); transform:rotateY(0deg); }
+#loginWrapper form {
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+
+	/* Enabling 3d space for the transforms */
+	-moz-transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+
+	/* When the forms are flipped, they will be hidden */
+	-moz-backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+
+	/* Enabling a smooth animated transition */
+	-moz-transition:0.8s;
+	-webkit-transition:0.8s;
+	transition:0.8s;
+
+	/* Configure a keyframe animation for Firefox */
+	-moz-animation: pulse 2s infinite;
+
+	/* Configure it for Chrome and Safari */
+	-webkit-animation: pulse 2s infinite;
+}
+
+.logControl { margin-top: 15px; }
+.logControl a { float: left; margin-top: 12px; }
+.logControl a:last-child { float: right; margin-top: 12px; }
+.logControl input[type=submit] { float: left; }

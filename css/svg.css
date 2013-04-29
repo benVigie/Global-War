@@ -1,0 +1,32 @@
+/*----------------
+	SVG Classes
+----------------*/
+.svg-country {
+	stroke: Grey;
+	opacity: 0.7;
+
+	-webkit-transition: stroke 400ms linear, opacity 400ms linear;
+}
+.svg-country.canAttack {
+	opacity: 1;
+	stroke-width: 3;
+}
+.svg-country.cannotAttack {
+	opacity: 0.5;
+}
+
+.svg-pastille {
+	stroke: White;
+	stroke-width: 2;
+	cursor: pointer;
+	opacity: 0.6;
+}
+
+.svg-text {
+	cursor: pointer;
+	fill: #3F3F3F;
+	font-family: CPMono;
+}
+
+::selection { background: transparent; }
+::-moz-selection { background: transparent; }
