@@ -27,6 +27,7 @@ function	GameEngine(gameID, playerID) {
 		_attackedCountry = null,		// Place qui est attaque
 		_playerColor = null,			// Couleur du joueur. Utilise dans la reconnaissance de territoire
 		_ownerTerritories = [],			// Tableau des territoires appartenant au joueur
+		_timer,							// Timer utilisé en mode scénario: toutes les x secondes il 
 		_placeA, _placeB;				// Variables pour stocker le nombre d'unités de 2 territoires
 		
 	// Liste des etats et de leur relation (Oui monsieur c'est du fait main :)
@@ -180,20 +181,39 @@ function	GameEngine(gameID, playerID) {
 			// On deroule le scenario de chaque coup joue
 			console.log('>>>>>>>>> Deroulement du scenario precedent');
 			if (datas !== null) {
-				for (i in datas) {
-					console.log(datas[i]);
-				}
+				console.log("Obj receive:");
+				console.log(datas);
+				// Création d'un timer qui shift une action toutes les 2 secondes
+				_timer = window.setInterval(
+					function () {
+						if (datas.length == 0) {
+							window.clearInterval(_timer);
+							console.log('<<<<<<<< Fin du scenar');
+							console.log('Lancement du jeu et du reneforcement');
+
+							// Pour finir, on fait la transition en appelant la fonction de renforts
+							$.ajax({
+								url: 'ajax/getRenforcementNumber.php?game=' + _gameID + '&player=' + _playerID + '&playerTurn',
+								dataType: 'json',
+								success: stepTwo_Renforcement,
+								error: notifyError
+							});
+						}
+						else {
+							action = datas.shift();
+							showAction(action[3], action);
+						}
+					},
+					// 2000);
+					300);
 			}
-			console.log('<<<<<<<< Fin du scenar');
 		}
 
-		// Pour finir, on fait la transition en appelant la fonction de renforts
-		$.ajax({
-			url: 'ajax/getRenforcementNumber.php?game=' + _gameID + '&player=' + _playerID + '&playerTurn',
-			dataType: 'json',
-			success: stepTwo_Renforcement,
-			error: notifyError
-		});
+	}
+
+
+	function showAction(type, action) {
+		console.log('Action Type: ' + type);
 	}
 
 	/**

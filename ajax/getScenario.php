@@ -20,5 +20,6 @@
 	$db->close();
 
 	// Echo reponse
-	echo (json_encode($actions, JSON_FORCE_OBJECT));
+	// echo (json_encode($actions, JSON_FORCE_OBJECT));
+	echo (json_encode($actions));
 ?>

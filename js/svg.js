@@ -5,7 +5,6 @@ function	MapSVG() {
 		_statesList = {},				// Liste des etats
 		_textList = [],					// Liste des 
 		_width = 1200, _height = 700,	// Taille par défaut du canvas
-		// x = y = 0,
 
 		_posX = _posY = 0,				// Position du canvas dans son container
 		_dragX, _dragY,					// Utilisez dans le déplacement de la map
@@ -31,20 +30,18 @@ function	MapSVG() {
 		for (i in g) {
 			if (g[i].getAttribute && g[i].getAttribute('inkscape:label')) {
 				if (g[i].getAttribute('inkscape:label') === 'flightpaths' ||
-					// g[i].getAttribute('inkscape:label') === 'path' ||
 					g[i].getAttribute('inkscape:label') === 'countries') {
 					countries = g[i].querySelectorAll('path');
 					
 					// console.log(countries.length + ' pays a dessiner');
 					for (j in countries) {
 						if (countries[j].getAttribute) {
-							// gl_st.push(_statesList[countries[j].getAttribute('id')] = _raph_paper.path(countries[j].getAttribute('d')));
 							svg = _raph_paper.path(countries[j].getAttribute('d'));
 							if (countries[j].getAttribute('id').toString().indexOf('path') === -1) {
 								uuid = countries[j].getAttribute('uuid').toString();
 								_statesList[countries[j].getAttribute('id').toString()] = svg;
 								
-								// On applique quelques modificqtions esthetiques
+								// On applique quelques modifications esthetiques
 								svg.node.setAttribute('class', 'svg-country country' + uuid);
 								svg.node.setAttribute('data-uuid', uuid);
 								
@@ -94,6 +91,8 @@ function	MapSVG() {
 								t.node.setAttribute('data-uuid', uuid);
 								t.click(clickFunction);
 							}
+							else
+								svg.node.setAttribute('class', 'svg-line');
 						}
 					}
 				}

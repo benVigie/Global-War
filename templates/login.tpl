@@ -11,7 +11,6 @@
 	<link rel="stylesheet" href="css/m-icons.css" type="text/css" />
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-	<script type="text/javascript" src="js/plugins/jquery.jgrowl.js"></script>
 	<script type="text/javascript" src="js/tools.js"></script>
 </head>
 
@@ -47,10 +46,8 @@
 				</div>
 				
 				<div class="logControl">
-					<!-- <input type="submit" name="submit" value="Créer compte" class="buttonM bBlue" /> -->
 					<a href="#" onClick="newAccount();" class="m-btn blue"><i class="icon-white icon-plus"></i> Créer compte</a>
 					<a href="#" class="m-btn icn-only" onclick="toggleFlip();"><i class="icon-chevron-left"></i></a>
-					<!-- <a href="#" onclick="toggleFlip();">Connection</a> -->
 				</div>
 			</form>
 		</div>
@@ -70,14 +67,6 @@
 		function newAccount() {
 			document.querySelector('#newAccount').submit();
 		}
-
-		{if isset($Message)}
-		window.onload = function() {
-		setTimeout(function(){
-				displayMessage("{$Message}"{if isset($Message_error)}, {$Message_error}{/if});
-			},200);
-		}
-		{/if}
 	</script>
 
 </body>

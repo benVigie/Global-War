@@ -302,7 +302,7 @@
 				return (array('error' => 'Wait... Qui fait quoi la ???'));
 			// Et aussi qu'il s'attaque pas lui meme
 			if ($this->CheckTerritoryOwner($player, $Dplace))
-				return (array('error' => "Toi, t'es sacrement couillon."));
+				return (array('error' => "Ce territoire vous appartient déjà."));
 
 			// Ensuite on check que les territoires sont bien voisins
 			// TODO
@@ -381,7 +381,10 @@
 			}
 
 			// On insère la partie, le joueur, les places et le score de l'ataque puis de la defense dans les coups joues
-			$this->_db->Execute("INSERT INTO `strokes` (`stroke_id`, `stroke_game`, `stroke_player`, `stroke_type`, `stroke_board_src`, `stroke_board_dest`, `stroke_value_src`, `stroke_value_dest`, `stroke_date`) VALUES (NULL, '$this->_gameID', '$player', 'attack', '$Aplace', '$Dplace', '$nbA', '$nbD', CURRENT_TIMESTAMP)");
+			/*$this->_db->Execute("INSERT INTO `strokes` (`stroke_id`, `stroke_game`, `stroke_player`, `stroke_type`, `stroke_board_src`, `stroke_board_dest`, `stroke_value_src`, `stroke_value_dest`, `stroke_date`) VALUES (NULL, '$this->_gameID', '$player', 'attack', '$Aplace', '$Dplace', '$nbA', '$nbD', CURRENT_TIMESTAMP)");*/
+
+			$this->_db->Execute("INSERT INTO `strokes` (`stroke_id` `stroke_game` `stroke_player` `stroke_type` `stroke_board_src` `stroke_board_dest` `stroke_value_src` `stroke_value_dest` `stroke_infos_src` `stroke_infos_dest` `stroke_date`) 
+				VALUES (NULL '$this->_gameID' '$player' 'attack' '$Aplace' '$Dplace' '$nbA' '$nbD' '" . implode('-', $scoreA) . " '" . implode('-', $scoreD) . "' CURRENT_TIMESTAMP)");
 
 
 			// TODO: Récupération du nombre d'unités et de renforts pour les 2 joueurs
@@ -439,7 +442,8 @@
 			if (is_null($unitsNumber))
 				return (false);
 
-			$nb += intval($unitsNumber[0]['board_units']);
+			$nbOrigin = intval($unitsNumber[0]['board_units']);
+			$nb += $nbOrigin;
 			$player = $unitsNumber[0]['board_player'];
 
 			// Update BDD
@@ -448,10 +452,11 @@
 			$updateBoard = $this->_db->Execute("INSERT INTO `boards` (`board_id`, `board_game`, `board_player`, `board_place`, `board_units`, `board_date`) VALUES (NULL, '$this->_gameID', '$player', '$place', '$nb', CURRENT_TIMESTAMP)");
 			
 			//  - Puis on enregistre un nouveau coup pour les replays
-			$newStroke = $this->_db->Execute("INSERT INTO `strokes` (`stroke_id`, `stroke_game`, `stroke_player`, `stroke_type`, `stroke_board_src`, `stroke_board_dest`, `stroke_value_src`, `stroke_value_dest`, `stroke_date`) VALUES (NULL, '$this->_gameID', '$player', 'renforcement', '$place', '$place', '$nb', '$nb', CURRENT_TIMESTAMP)");
+			$newStroke = $this->_db->Execute("INSERT INTO `strokes` (`stroke_id`, `stroke_game`, `stroke_player`, `stroke_type`, `stroke_board_src`, `stroke_board_dest`, `stroke_value_src`, `stroke_value_dest`, `stroke_date`) VALUES (NULL, '$this->_gameID', '$player', 'renforcement', '$place', '$place', '$nbOrigin', '$nb', CURRENT_TIMESTAMP)");
 			
 			if ($updateBoard && $newStroke)
 				return (true);
+
 			return (false);
 		}
 
@@ -498,13 +503,15 @@
 		*	@param Int $player Id du joueur a updater
 		*	@param Int $place Id du territoire a updater
 		*	@param Int $nb Nombre d'unite a ajouter (generallement 1 ou -1)
-		*	@return String message d'erreur, ou TRUE si ressit
+		*	@return String message d'erreur, ou TRUE si reussit
 		*/
 		public function 	UpdateRenforcement($player, $place, $nb) {
 			// Recuperation du nombre d'unites sur ce territoire
 			$infos = $this->_db->GetRows("SELECT `players_in_games`.`pig_renf_max`, `players_in_games`.`pig_renf_number` FROM `players_in_games` WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'");
+			
 			if (is_null($infos))
 				return ("Impossible de recuperer les infos en BDD");
+			
 			$max = $infos[0]['pig_renf_max'];
 			$unitsLeft = $infos[0]['pig_renf_number'];
 

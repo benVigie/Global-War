@@ -8,7 +8,8 @@
 	if (!isset($_GET['game']) || !isset($_GET['player']) || !isset($_GET['place']) || !isset($_GET['action']))
 		AjaxExit("Manque d'informations pour r&eacute;cup&eacute;rer le nombre d'unit&eacute;s");
 	$gameID =	$_GET['game'];
-	$player =	$_GET['player'];
+	// $player =	$_GET['player'];
+	$player =	$_SESSION['user-id'];
 	$place = 	$_GET['place'];
 	$action = 	$_GET['action'];
 

@@ -5,10 +5,11 @@
 	stroke: Grey;
 	opacity: 0.7;
 
-	-webkit-transition: stroke 400ms linear, opacity 400ms linear;
+	-webkit-transition: stroke 400ms ease-out, opacity 400ms ease-out;
 }
-.svg-country.canAttack {
+.svg-country.canAttack, .svg-country.highLight {
 	opacity: 1;
+	stroke: darkgrey;
 	stroke-width: 3;
 }
 .svg-country.cannotAttack {
@@ -26,6 +27,13 @@
 	cursor: pointer;
 	fill: #3F3F3F;
 	font-family: CPMono;
+}
+
+.svg-line {
+	stroke-dasharray: 5px;
+	stroke-width: 1px;
+	stroke: grey;
+	opacity: 0.8;
 }
 
 ::selection { background: transparent; }
