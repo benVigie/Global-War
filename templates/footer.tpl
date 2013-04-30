@@ -19,7 +19,7 @@
 					<select name="bug-level" id="bug-level">
 						<option value="">Mega important !</option>
 						<option value="">Un peu quand meme...</option>
-						<option value="">Non pas du tout mai j'aime bien faire chier</option>
+						<option value="">Non pas du tout mais j'aime bien faire chier</option>
 					</select>
 
 					<label>Description</label>
@@ -45,13 +45,15 @@
 						type: 'bugReport',
 						cause: $('#bug-type option:selected').text(),
 						importance: $('#bug-level option:selected').text(),
+						rapporteur: document.querySelector('.user-nick').innerHTML,
+						email: document.querySelector('.user-email').innerHTML,
 						message: $('#bug-message').val()
 					},
 					success: function(data) {
 						// Fermeture de la fenetre
 						$('.js-modal-report').data('kit-modal').close();
 						
-						// Affihcage d'un petit message
+						// Affichage d'un petit message
 						displayMessage('Merci de votre aide :) !', 'Rapport envoyé');
 					},
 					error: notifyError

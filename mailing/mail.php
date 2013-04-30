@@ -43,8 +43,10 @@
 		$cause = $_POST['cause'];
 		$importance = $_POST['importance'];
 		$message = $_POST['message'];
+		$rapporteur = $_POST['rapporteur'];
+		$email = $_POST['email'];
 
-		return ($mail->Send(null, 'Global War - Rapport de bug / reclamation', "<h2>$cause</h2>Importance: <strong>$importance</strong><br/><br/>Description de la demande:<br/>$message"));
+		return ($mail->Send(null, 'Global War - Rapport de bug / reclamation', "<h2>$cause</h2>Importance: <strong>$importance</strong><br/><strong>Rapporteur: $rapporteur ($email)</strong><br/><br/>Description de la demande:<br/>$message"));
 	}
 
 	function sendNewGame($mail) {
@@ -84,7 +86,7 @@
 		$points = $_POST['points'];
 		
 		if ($position === 'winner') {
-			$message = "<h2>F&eacute;licitations !</h2>";
+			$message = "<h2>Felicitations !</h2>";
 			$message .= "C'&eacute;tait un rude combat, mais vous avez gagn&eacute; soldat. Bravo !<br/>";
 			$message .= "Votre victoire vient de vous rapporter " . $points . " points.";
 			$message .= '<br/><br/>Une fois remis de vos blessures, n\'h&eacute;sitez pas &agrave; <a style="text-decoration: none; color: steelblue" href="http://htmlengine/old/ben/global-war/">revenir sur le champ de bataille</a><br/>';

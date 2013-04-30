@@ -180,16 +180,22 @@ function	GameEngine(gameID, playerID) {
 			
 			// On deroule le scenario de chaque coup joue
 			console.log('>>>>>>>>> Deroulement du scenario precedent');
-			if (datas !== null) {
+			if (datas != null) {
+
+				// Debug display
 				console.log("Obj receive:");
 				console.log(datas);
+				
 				// Création d'un timer qui shift une action toutes les 2 secondes
 				_timer = window.setInterval(
 					function () {
+						// Si le scenario a finit de se derouler, on enchaine
 						if (datas.length == 0) {
 							window.clearInterval(_timer);
 							console.log('<<<<<<<< Fin du scenar');
-							console.log('Lancement du jeu et du reneforcement');
+							console.log('Lancement du jeu et du renforcement');
+
+							// Charger l'etat actuel de la map par mesure de securitee
 
 							// Pour finir, on fait la transition en appelant la fonction de renforts
 							$.ajax({
@@ -199,6 +205,7 @@ function	GameEngine(gameID, playerID) {
 								error: notifyError
 							});
 						}
+						// Si il reste des actions a montrer, on l'affiche
 						else {
 							action = datas.shift();
 							showAction(action[3], action);
@@ -208,7 +215,14 @@ function	GameEngine(gameID, playerID) {
 					300);
 			}
 		}
-
+		else {
+			$.ajax({
+				url: 'ajax/getRenforcementNumber.php?game=' + _gameID + '&player=' + _playerID + '&playerTurn',
+				dataType: 'json',
+				success: stepTwo_Renforcement,
+				error: notifyError
+			});
+		}
 	}
 
 
@@ -301,7 +315,7 @@ function	GameEngine(gameID, playerID) {
 			case EnumStates.Attack:
 				hideSelectedCountries();
 				// Update texte et ajout bouton fin de tour
-				stateDiv.innerHTML = 'Attaque ! <br/> <a id="btn-endTurn" class="m-btn blue"> Fin du tour <i class="icon-white icon-flag"></i></a>';
+				stateDiv.innerHTML = 'Attaque ! <br/> <a id="btn-endTurn" class="m-btn blue"> Fin de l\'attaque <i class="icon-white icon-flag"></i></a>';
 				document.querySelector('#btn-endTurn').onclick = function () {
 					updateGameState(EnumStates.Last_move);
 				}
