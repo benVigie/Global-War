@@ -77,7 +77,7 @@
 			for ($i = 0; $i < count($players); $i++) {
 				$place = $i + 1;
 				$player = $players[$i];
-				if (!$this->_db->Execute("INSERT INTO `players_in_games` (`pig_game`, `pig_player`, `pig_player_status`, `pig_order`, `pig_color`) VALUES ('$game_id', '$player', 'alive', '$place', '$colors[$i]')"))
+				if (!$this->_db->Execute("INSERT INTO `players_in_games` (`pig_game`, `pig_player`, `pig_player_status`, `pig_order`, `pig_bonus`, `pig_color`) VALUES ('$game_id', '$player', 'alive', '$place', '0', $colors[$i]')"))
 					return ('Erreur lors de la cr&eacute;ation du jeu (1)');
 			}
 
@@ -195,11 +195,11 @@
 		*	@return Array Un tableaux des differents coups dans l'ordre chronologique
 		*/
 		public function 	GetLastAction($player) {
-			// Explication de la requete. On recupere tous les coups joue de la partie...
-			$query = "SELECT * FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' ";
-			
-			// Ici on envoie une premiere requete pour connaitre le dernier coup du joueur
+			// Requete 1:  Recuperation de l'heure du dernier coup du joueur
 			$lastAction = $this->_db->GetRows("SELECT `strokes`.`stroke_date` FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' AND `strokes`.`stroke_player` = '$player' ORDER BY `strokes`.`stroke_date` DESC LIMIT 0, 1");
+
+			// requete 2: On recupere tous les coups joue de la partie...
+			$query = "SELECT * FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' ";
 
 			// ... Si il a deja joue, on recupere tous les coups APRES son dernier ...
 			if (!is_null($lastAction)) {
@@ -347,7 +347,6 @@
 			}
 			// echo('<br/><br/>Attaque: ' . $nbA . ' - ' . $nbD . ' Defense<br/>');
 			
-			
 			// Soit les 2 camps on encore des unites presentes. Dans ce cas on insert le nouvel etat des 2 cases
 			if ($totalUnitsD > 0) {
 				// update la place attaquante
@@ -373,6 +372,9 @@
 				$this->_db->Execute("INSERT INTO `boards` (`board_id`, `board_game`, `board_player`, `board_place`, `board_units`, `board_date`) VALUES (NULL, '$this->_gameID', '$player', '$Aplace', '$totalUnitsA', CURRENT_TIMESTAMP)");
 				$this->_db->Execute("INSERT INTO `boards` (`board_id`, `board_game`, `board_player`, `board_place`, `board_units`, `board_date`) VALUES (NULL, '$this->_gameID', '$player', '$Dplace', '$totalUnitsD', CURRENT_TIMESTAMP)");
 
+				// On incrémente le bonus du joueur (+1 par territoire gagné)
+				$this->_db->Execute("UPDATE `players_in_games` SET `pig_bonus` = `pig_bonus` + 1 WHERE `pig_game` = '$this->_gameID' AND `pig_player` = '$player'");
+
 				// On précise qu'il prend le territoire
 				$attackWinTerritory = true;
 				
@@ -381,13 +383,8 @@
 			}
 
 			// On insère la partie, le joueur, les places et le score de l'ataque puis de la defense dans les coups joues
-			/*$this->_db->Execute("INSERT INTO `strokes` (`stroke_id`, `stroke_game`, `stroke_player`, `stroke_type`, `stroke_board_src`, `stroke_board_dest`, `stroke_value_src`, `stroke_value_dest`, `stroke_date`) VALUES (NULL, '$this->_gameID', '$player', 'attack', '$Aplace', '$Dplace', '$nbA', '$nbD', CURRENT_TIMESTAMP)");*/
-
-			$this->_db->Execute("INSERT INTO `strokes` (`stroke_id` `stroke_game` `stroke_player` `stroke_type` `stroke_board_src` `stroke_board_dest` `stroke_value_src` `stroke_value_dest` `stroke_infos_src` `stroke_infos_dest` `stroke_date`) 
-				VALUES (NULL '$this->_gameID' '$player' 'attack' '$Aplace' '$Dplace' '$nbA' '$nbD' '" . implode('-', $scoreA) . " '" . implode('-', $scoreD) . "' CURRENT_TIMESTAMP)");
-
-
-			// TODO: Récupération du nombre d'unités et de renforts pour les 2 joueurs
+			$this->_db->Execute("INSERT INTO `strokes` (`stroke_id`, `stroke_game`, `stroke_player`, `stroke_type`, `stroke_board_src`, `stroke_board_dest`, `stroke_value_src`, `stroke_value_dest`, `stroke_infos_src`, `stroke_infos_dest`, `stroke_date`) 
+				VALUES (NULL, '$this->_gameID', '$player', 'attack', '$Aplace', '$Dplace', '$nbA', '$nbD', '" . implode('-', $scoreA) . "', '" . implode('-', $scoreD) . "', CURRENT_TIMESTAMP)");
 
 
 			// Preparation de la reponse
@@ -522,6 +519,13 @@
 				// Si l'update fonctionne, on decremente les renforts restants en BDD
 				if ($this->UpdateTerritoryUnities($place, $nb))
 					return ($this->_db->Execute("UPDATE `players_in_games` SET `players_in_games`.`pig_renf_number` = `players_in_games`.`pig_renf_number` - 1 WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'"));
+				
+				// Si la dernière unitée vient d'être attribuée, et si les bonus n'ont pas été consommés, on offre une troupe en cadeau pour le prochain tour
+				if ($unitsLeft == 0) {
+					if ($this->GetNbBonusTroops($player) > 0)
+						$this->_db->Execute("UPDATE `players_in_games` SET `pig_bonus` = `pig_bonus` + 1 WHERE `pig_game` = '$this->_gameID' AND `pig_player` = '$player'");
+				}
+
 			}
 			// TODO: rajouter l'annulation (aka $nb == -1)
 		}
@@ -540,6 +544,23 @@
 			$unitsLeft = $infos[0]['pig_renf_number'];
 
 			return (intval($unitsLeft));
+		}
+
+		/**
+		*	Recupere le nombre de troupes bonus du joueur
+		*
+		*	@param Int $player Id du joueur a updater
+		*	@return Int nombre de troupes en bonus disponibles
+		*/
+		public function 	GetNbBonusTroops($player) {
+			// Recuperation du nombre d'unites sur ce territoire
+			$infos = $this->_db->GetRows("SELECT `players_in_games`.`pig_bonus` FROM `players_in_games` WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'");
+			
+			if (is_null($infos))
+				return ("Impossible de recuperer les infos en BDD");
+			$bonus = $infos[0]['pig_bonus'];
+
+			return (intval($bonus));
 		}
 
 		/**
@@ -708,6 +729,29 @@
 			// TODO: checker si la couleur existe dans la liste des couleurs authorisées
 
 			return ($this->_db->Execute("UPDATE `players_in_games` SET `pig_color` = '$color' WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$playerID'"));
+		}
+
+		/**
+		*	Lorsqu'un joueur veut utiliser son bonus de troupes, c'est ici que ça se passe !
+		*
+		*	@param {Int} $playerID L'ID du joueur
+		*	@return {Int} Le nombre d'unités disponibles après utilisation du bonus 
+		*/
+		public function 	GiveMeMyBonus($playerID) {
+			// Incremente en BDD le nombre de renforts maximum ainsi que le nombre de renforts dispos et set le bonus à 0
+			if (!$this->_db->Execute("UPDATE `players_in_games` SET 
+							`pig_renf_max` = `pig_renf_max` + `pig_bonus`, 
+							`pig_renf_number` = `pig_renf_number` + `pig_bonus`, 
+							`pig_bonus` = '0' 
+							WHERE `pig_game` = '$this->_gameID' AND `pig_player` = '$playerID'"))
+				return (-1);
+
+			$nbRenf = $this->_db->GetRows("SELECT `pig_renf_number` AS `NB` FROM `players_in_games` WHERE `pig_game` = '$this->_gameID' AND `pig_player` = '$playerID'");
+			
+			if (is_null($nbRenf))
+				return (-1);
+
+			return (intval($nbRenf[0]['NB']));
 		}
 
 

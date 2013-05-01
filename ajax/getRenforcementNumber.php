@@ -6,8 +6,10 @@
 	// Recuperation de l'ID du joueur et de la partie
 	if (!isset($_GET['game']) || !isset($_GET['player']))
 		AjaxExit("Manque d'informations pour r&eacute;cup&eacute;rer le nombre de renforts");
+	
 	$gameID = $_GET['game'];
 	$player = $_GET['player'];
+
 	// Permet de recuperer le VRAI nombre de renforts (aka les restant pour son tour de jeu) pour le joueur courant
 	$renfortsRestants = isset($_GET['playerTurn']);
 
@@ -21,7 +23,9 @@
 
 	// Selon l'info demandee, on recupere le nombre de renforts restant OU le nombre de renforts total
 	$nb = ($renfortsRestants === true) ? $game->GetRenforcementLeft($player) : $game->GetRenforcementNumber($player);
-	$res = array('player' => $player, 'renforcements' => $nb);
+	$bonus = $game->GetNbBonusTroops($player);
+
+	$res = array('player' => $player, 'renforcements' => $nb, 'bonus' => $bonus);
 	$db->close();
 
 	// Echo reponse

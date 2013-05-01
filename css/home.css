@@ -529,12 +529,14 @@ h1 {
 }
 
 #act-renforcement {
-	
+	font-family: CPMono;
+	font-size: 1.2em;
 }
 
 #act-renforcement span {
 	display: block;
 	padding-top: 10px;
+	margin: 10px;
 
 	font-size: 2em;
 	text-align: center;

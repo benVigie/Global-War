@@ -5,7 +5,7 @@
 
 
 	// Recuperation des parametres
-	if (!isset($_GET['game']) || !isset($_GET['player']) || !isset($_GET['place']) || !isset($_GET['action']))
+	if (!isset($_GET['game']) || !isset($_GET['place']) || !isset($_GET['action']))
 		AjaxExit("Manque d'informations pour r&eacute;cup&eacute;rer le nombre d'unit&eacute;s");
 	$gameID =	$_GET['game'];
 	// $player =	$_GET['player'];
@@ -22,8 +22,24 @@
 	$game = new gameManager($db, $gameID);
 	$res = array('place' => $place);
 
+	// Si le joueur veut utiliser son bonus
+	if ($action === 'bonus') {
+		$nbTroops = $game->GiveMeMyBonus($player);
+
+		if ($nbTroops < 0)
+			AjaxExit("Impossible de traiter le bonus :/");
+		else {
+			$res['units'] = $nbTroops;
+			$db->close();
+
+			// Echo reponse
+			echo (json_encode($res, JSON_FORCE_OBJECT));
+			exit(0);
+		}
+	}
+
 	// Si le territoire appartient bien au joueur, on coninue
-	if ($game->CheckTerritoryOwner($player, $place)) {
+	else if ($game->CheckTerritoryOwner($player, $place)) {
 
 		// Ajout d'une unitée
 		if ($action === 'add') {

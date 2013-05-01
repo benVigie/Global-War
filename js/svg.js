@@ -115,8 +115,6 @@ function	MapSVG() {
 		var plan = document.querySelector('#map');
 		plan.addEventListener("mousewheel", mouseWheelHandler, false);
 		plan.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
-		
-		// console.log(Players);
 	}
 
 	that.AssignMap = function (data) {
@@ -134,6 +132,13 @@ function	MapSVG() {
 			// Set du nombre d'unités
 			_textList[place].attr('text', nb_units);
 		}
+	}
+
+	that.SetPastillaText = function (pastillaNumber, text) {
+		if (isNaN(pastillaNumber))
+			pastillaNumber = parseInt(pastillaNumber, 10);
+
+		_textList[pastillaNumber].attr('text', text);
 	}
 
 	 function canIAttack(warCountry, targetCountry) {

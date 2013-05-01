@@ -72,7 +72,7 @@
 				// TODO: vérifier qu'on ai bien les variables {$GameID} et {$User_id}
 				var map = MapSVG();
 
-				_gameEngine = GameEngine({$GameID}, {$User_id});
+				_gameEngine = GameEngine({$GameID}, {$User_id}, map);
 
 				// On dessine la map
 				map.CreateMap(_gameEngine.ClickFunction);

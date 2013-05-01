@@ -14,7 +14,7 @@ var EnumStates = {};
 *	@param: {Int} playerID => L'id du joueur
 *	@return: {Object} Le subset des methodes publiques de ce jeu.
 */
-function	GameEngine(gameID, playerID) {
+function	GameEngine(gameID, playerID, map) {
 	// Les proprietes de notre GameEngine
 	var that = {},
 		_gameID = gameID,				// ID de la partie en cours
@@ -27,7 +27,9 @@ function	GameEngine(gameID, playerID) {
 		_attackedCountry = null,		// Place qui est attaque
 		_playerColor = null,			// Couleur du joueur. Utilise dans la reconnaissance de territoire
 		_ownerTerritories = [],			// Tableau des territoires appartenant au joueur
-		_timer,							// Timer utilisé en mode scénario: toutes les x secondes il 
+		_timer,							// Timer utilisé en mode scénario: toutes les x secondes il affiche une action
+		_scenarioActionDuration = 2000,	// Temps entre chaque action affiché en mode scénario
+		_map = map,						// pointeur sur l'objet map  
 		_placeA, _placeB;				// Variables pour stocker le nombre d'unités de 2 territoires
 		
 	// Liste des etats et de leur relation (Oui monsieur c'est du fait main :)
@@ -196,14 +198,24 @@ function	GameEngine(gameID, playerID) {
 							console.log('Lancement du jeu et du renforcement');
 
 							// Charger l'etat actuel de la map par mesure de securitee
-
-							// Pour finir, on fait la transition en appelant la fonction de renforts
 							$.ajax({
-								url: 'ajax/getRenforcementNumber.php?game=' + _gameID + '&player=' + _playerID + '&playerTurn',
+								url: 'ajax/getMapState.php?game=' + _gameID,
 								dataType: 'json',
-								success: stepTwo_Renforcement,
+								success: function (datas) {
+									// On remet la map d'équerre au cas ou
+									_map.AssignMap(datas);
+
+									// Pour finir, on fait la transition en appelant la fonction de renforts
+									$.ajax({
+										url: 'ajax/getRenforcementNumber.php?game=' + _gameID + '&player=' + _playerID + '&playerTurn',
+										dataType: 'json',
+										success: stepTwo_Renforcement,
+										error: notifyError
+									});
+								},
 								error: notifyError
 							});
+
 						}
 						// Si il reste des actions a montrer, on l'affiche
 						else {
@@ -212,7 +224,7 @@ function	GameEngine(gameID, playerID) {
 						}
 					},
 					// 2000);
-					300);
+					_scenarioActionDuration);
 			}
 		}
 		else {
@@ -227,7 +239,63 @@ function	GameEngine(gameID, playerID) {
 
 
 	function showAction(type, action) {
-		console.log('Action Type: ' + type);
+		var player = action[2],
+			pA = action[4],
+			pB = action[5],
+			vA = action[6],
+			vB = action[7],
+			iA = action[8],
+			iB = action[9],
+			nbA, nbB,
+			highlightedCountries;
+
+		// On met les territoires en surbrillance
+		document.querySelector('.country' + pA).classList.add('highLight');
+		document.querySelector('.country' + pB).classList.add('highLight');
+		
+		switch (type) {
+			case 'renforcement':
+				window.setTimeout(function () {
+					_map.SetPastillaText(pA, vB);
+				}, (_scenarioActionDuration / 3));
+				break;
+			
+			case 'attack':
+				// On recupere le nombre de troupes présentes
+				nbA = parseInt(document.querySelector('#text' + pA.toString() + ' > tspan').textContent, 10);
+				nbB = parseInt(document.querySelector('#text' + pB.toString() + ' > tspan').textContent, 10);
+				
+				// Calcul des troupes restantes
+				nbA -= parseInt(vB, 10);
+				nbB -= parseInt(vA, 10);
+
+				window.setTimeout(function () {
+					_map.SetPastillaText(pA, nbA);
+					_map.SetPastillaText(pB, nbB);
+
+					if (nbB == 0) {
+						updateInvadedCountry(player, pB);
+					}
+				}, (_scenarioActionDuration / 3));
+				break;
+
+			case 'move':
+				window.setTimeout(function () {
+					_map.SetPastillaText(pA, vA);
+					_map.SetPastillaText(pB, vB);
+				}, (_scenarioActionDuration / 3));
+				break;
+
+			default:
+				console.log('Action inconnue [' + type + '] :(');
+		}
+
+		// Dans la foulee on programme la suppression des zones selectionnées
+		oldCountries = document.querySelectorAll('.highLight');
+		window.setTimeout(function () {
+			for (var i = 0; i < oldCountries.length; i++)
+				oldCountries[i].classList.remove('highLight');
+		}, (_scenarioActionDuration * (2 / 3)));
 	}
 
 	/**
@@ -278,17 +346,51 @@ function	GameEngine(gameID, playerID) {
 			return;
 		}
 
-		// debugger
 		// Si il reste des renforts
 		if (datas.renforcements > 0) {
-			renfDiv = '<div id="act-renforcement">Renforts restant:<br/><span>' + datas.renforcements + '</span><a class="m-btn red"><i class="icon-white icon-share-alt"></i> Oups !</a></div>'
+			renfDiv = '<div id="act-renforcement">Renforts restant:<br/><span>' + datas.renforcements + '</span>';
+			
+			// Si des troupes bonus sont dispos, on affiche le bouton pour les utiliser
+			if (datas.bonus && datas.bonus > 0)
+				renfDiv += '<a class="m-btn blue" id="btn-bonus"><i class="icon-white icon-plus"></i> Utiliser mon bonus: +' + datas.bonus + '</a>';
+				
+			renfDiv += '</div>'
 			actDiv.innerHTML = renfDiv;
 			actDiv.classList.add('show');
+
+			// On bind l'event clic si on a ajouté le bouton bonus
+			if (datas.bonus && datas.bonus > 0)
+				document.querySelector('#btn-bonus').onclick = wantBonusTroops;
 
 			updateGameState(EnumStates.Renforcement);
 		}
 		else
 			updateGameState(EnumStates.Attack);
+	}
+
+	function wantBonusTroops() {
+		var actDiv = document.querySelector('#actionDiv'),
+			renfDiv;
+
+		// On attend la réponse
+		updateGameState(EnumStates.Wait);
+		
+		$.ajax({
+			url: 'ajax/renforcement.php?game=' + _gameID + '&place=0&action=bonus',
+			dataType: 'json',
+			success: function (datas) {
+				if (datas.error) {
+					displayMessage(datas.error, 'Ouuups !', 'error');
+				}
+				else {
+					renfDiv = '<div id="act-renforcement">Renforts restant:<br/><span>' + datas.units + '</span></div>'
+					actDiv.innerHTML = renfDiv;
+				}
+				// Remise en etat du jeu
+				updateGameState(EnumStates.Renforcement);
+			},
+			error: notifyError
+		});
 	}
 
 	/**
@@ -361,9 +463,13 @@ function	GameEngine(gameID, playerID) {
 	*	@return:
 	*/
 	that.LoadMap = function (callback) {
+		var mapUrl = 'ajax/getMapState.php?game=' + _gameID;
+
+		if (_isPlayerTurn)
+			mapUrl += '&loadLastKnewState';
+
 		$.ajax({
-			// url: 'ajax/getMapState.php?game=' + _gameID + '&time=',
-			url: 'ajax/getMapState.php?game=' + _gameID,
+			url: mapUrl,
 			dataType: 'json',
 			success: callback,
 			error: notifyError
@@ -482,7 +588,6 @@ function	GameEngine(gameID, playerID) {
 		if (datas.action === 'add') {
 			// Update de la pastille
 			updt = document.querySelector('#text' + datas.place + ' > tspan');
-			// console.log(updt);
 			updt.textContent = datas.units;
 
 			// Update de l'encart renforts
@@ -498,7 +603,7 @@ function	GameEngine(gameID, playerID) {
 				updt.innerHTML = nb.toString();
 				window.setTimeout(function() {
 					updateGameState(EnumStates.Renforcement);
-				}, 400);
+				}, 500);
 			}
 		}
 	}
@@ -609,12 +714,16 @@ function	GameEngine(gameID, playerID) {
 	/**
 	*	Met a jour le pays envahit (change la couleur et d'autres petits trucs...) 
 	*
-	*	@param: {Int} invaderID
+	*	@param: {Int} invaderID ID du joueur qui envahit le territoire
 	*	@param: {Int} country => id of the invadedv country
 	*	@return:
 	*/
 	function updateInvadedCountry (invaderID, country) {
-		document.querySelector('.pastille' + country).setAttribute('fill', _playerColor);
+		var color = getPlayerInfo(invaderID, 'color');
+
+		var test = document.querySelector('.pastille' + country);
+		test.setAttribute('fill', color);
+		// document.querySelector('.pastille' + country).setAttribute('fill', color);
 	}
 
 	/**
@@ -759,7 +868,6 @@ function	GameEngine(gameID, playerID) {
 		}
 
 		// Maintenant les boutons et on est bon
-		// box += '</div><a id="btn-attack" class="m-btn green"> Attaquer !</a> <a id="btn-stop" class="m-btn red"> Stop <i class="icon-white icon-remove-circle"></i></a>';
 		box += '</div><a id="btn-attack" class="m-btn green"><i class="icon-white icon-world"></i> Lancer les dés</a> <a id="btn-stop" class="m-btn red"> Stop <i class="icon-white icon-remove-circle"></i></a>';
 
 		// AJout dans la boite d'outils et display
@@ -811,7 +919,7 @@ function	GameEngine(gameID, playerID) {
 		updateGameState(EnumStates.Wait);
 
 		$.ajax({
-			url: 'ajax/renforcement.php?game=' + _gameID + '&player=' + _playerID + '&place=' + place + '&action=add',
+			url: 'ajax/renforcement.php?game=' + _gameID + '&place=' + place + '&action=add',
 			dataType: 'json',
 			success: onRenfReceive,
 			error: notifyError
