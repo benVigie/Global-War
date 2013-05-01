@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
+-- version 3.4.10.1
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Lun 29 Avril 2013 à 15:58
--- Version du serveur: 5.5.20-log
+-- Généré le : Mer 01 Mai 2013 à 20:08
+-- Version du serveur: 5.5.20
 -- Version de PHP: 5.3.10
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `players_in_games` (
   `pig_order` int(11) NOT NULL,
   `pig_renf_max` int(11) NOT NULL,
   `pig_renf_number` int(11) NOT NULL,
+  `pig_bonus` int(11) NOT NULL,
   `pig_color` varchar(7) NOT NULL,
   PRIMARY KEY (`pig_game`,`pig_player`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -117,6 +118,8 @@ CREATE TABLE IF NOT EXISTS `strokes` (
   `stroke_board_dest` int(11) NOT NULL,
   `stroke_value_src` int(11) NOT NULL,
   `stroke_value_dest` int(11) NOT NULL,
+  `stroke_infos_src` varchar(8) NOT NULL,
+  `stroke_infos_dest` varchar(8) NOT NULL,
   `stroke_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`stroke_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
