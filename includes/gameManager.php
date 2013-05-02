@@ -77,7 +77,7 @@
 			for ($i = 0; $i < count($players); $i++) {
 				$place = $i + 1;
 				$player = $players[$i];
-				if (!$this->_db->Execute("INSERT INTO `players_in_games` (`pig_game`, `pig_player`, `pig_player_status`, `pig_order`, `pig_bonus`, `pig_color`) VALUES ('$game_id', '$player', 'alive', '$place', '0', $colors[$i]')"))
+				if (!$this->_db->Execute("INSERT INTO `players_in_games` (`pig_game`, `pig_player`, `pig_player_status`, `pig_order`, `pig_bonus`, `pig_color`) VALUES ('$game_id', '$player', 'alive', '$place', '0', '$colors[$i]')"))
 					return ('Erreur lors de la cr&eacute;ation du jeu (1)');
 			}
 
@@ -475,8 +475,9 @@
 			$total = $this->GetPlaceUnitsNumber($A);
 			$total += $this->GetPlaceUnitsNumber($B);
 
-			if ($total !== ($nbA + $nbB))
+			if ($total !== ($nbA + $nbB)) {
 				return (false);
+			}
 				// echo ($total . '!== ' .$nbA. ' + ' . $nbB);
 
 			// TODO: selon l'état du jeu, laisser au moins 1 ou 3 unités sur le terrain B
@@ -516,9 +517,6 @@
 			if ($nb > 0) {
 				if (--$unitsLeft < 0) // Si on n'a plus de renforts mais qu'on essaye quand meme...
 					return ('Vieux tricheur...');
-				// Si l'update fonctionne, on decremente les renforts restants en BDD
-				if ($this->UpdateTerritoryUnities($place, $nb))
-					return ($this->_db->Execute("UPDATE `players_in_games` SET `players_in_games`.`pig_renf_number` = `players_in_games`.`pig_renf_number` - 1 WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'"));
 				
 				// Si la dernière unitée vient d'être attribuée, et si les bonus n'ont pas été consommés, on offre une troupe en cadeau pour le prochain tour
 				if ($unitsLeft == 0) {
@@ -526,6 +524,9 @@
 						$this->_db->Execute("UPDATE `players_in_games` SET `pig_bonus` = `pig_bonus` + 1 WHERE `pig_game` = '$this->_gameID' AND `pig_player` = '$player'");
 				}
 
+				// Si l'update fonctionne, on decremente les renforts restants en BDD
+				if ($this->UpdateTerritoryUnities($place, $nb))
+					return ($this->_db->Execute("UPDATE `players_in_games` SET `players_in_games`.`pig_renf_number` = `players_in_games`.`pig_renf_number` - 1 WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'"));
 			}
 			// TODO: rajouter l'annulation (aka $nb == -1)
 		}
@@ -570,7 +571,7 @@
 		*	@return Int Nombre d'unitees présentes sur le territoire
 		*/
 		public function GetPlaceUnitsNumber($place) {
-			$unitsNumber = $this->_db->GetRows("SELECT `boards`.`board_units` FROM `boards` WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_place` = '$place' ORDER BY `boards`.`board_date` DESC LIMIT 0,1");
+			$unitsNumber = $this->_db->GetRows("SELECT `boards`.`board_units` FROM `boards` WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_place` = '$place' ORDER BY `boards`.`board_id` DESC LIMIT 0,1");
 
 			if (is_null($unitsNumber))
 				return (0);
