@@ -51,6 +51,18 @@
 					</p>
 
 					<p>
+						<h3>1-bis) Les bonus</h3>
+						Lors de votre phases de renfort, et si vous avez gagné des territoires dans les précédents tours, un bouton bonus apparait. Il vous indique combien de troupes bonus sont actuellement disponibles. En cliquant sur ce bouton, vos renforts sont incrementés du nombre de bonus disponible.
+					</p>
+					<p>
+						2 règles simples régissent les bonus:
+						<ul>
+							<li>Chaque territoire conquis <strong>vous rapporte un bonus</strong> pour le tour suivant</li>
+							<li>Si vous ne consommez pas vos bonus lors de la phase de renforts, <strong>vous gagnez encore une unité bonus en plus</strong> pour le tour suivant</li>
+						</ul>
+					</p>
+
+					<p>
 						<h3>2) Attaque</h3>
 						Vous pouvez attaquer autant de fois que vous le voulez lors de votre tour. Vous ne pouvez attaquer qu'un territoire dont la frontière est commune avec l'un de vos territoire. Attention: vous ne pouvez attaquer que si votre position de départ possède au moins 2 unités. Car si vous gagner, l'une de ces unités devra se déplacer pour occuper le territoire gagné.
 					</p>
@@ -187,11 +199,14 @@
 
 					<ul id="bugList">
 						<li class="improvement"><span>&#x22;</span> Ajouter des animations lors de combats</li>
-						<li class="improvement"><span>&#x22;</span> Lors de notre tour de jeu, avoir un résumé des coups joué par les adversaires</li>
+						<li class="improvement"><span>&#x22;</span> Donner un nom aux parties</li>
+						<li class="improvement"><span>&#x22;</span> Ajouter un mode multijoueur</li>
+						<li class="improvement done"><span>&#x22;</span> Lors de notre tour de jeu, avoir un résumé des coups joué par les adversaires</li>
 						<li class="improvement done"><span>&#x22;</span> Voir son classement quand on est pas dans le top 3</li>
 						<li class="improvement"><span>&#x22;</span> Mettre au propre le JS (Require.js)</li>
 						<li class="improvement done"><span>&#x22;</span> Rendre le CSS compliant avec Firefox (surtout pour les animations)</li>
 						<li class="improvement"><span>&#x22;</span> Permettre de modifier sa photo de profil</li>
+						<li class="bug"><span>&#x66;</span> Attaques trop rapides/rapprochees ne sont pas prises en compte en BDD (probleme timestamp)</li>
 						<li class="bug done"><span>&#x66;</span> Certains clic ne sont pas pris en compte ? (Firefox)</li>
 						<li class="bug done"><span>&#x66;</span> Quand un joueur quitte une partie, elle s'arrete</li>
 					</ul>

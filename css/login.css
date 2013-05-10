@@ -71,3 +71,9 @@
 .logControl a { float: left; margin-top: 12px; }
 .logControl a:last-child { float: right; margin-top: 12px; }
 .logControl input[type=submit] { float: left; }
+
+
+/* Chrome XP bug */
+#loginWrapper form:first-child { z-index: 3; }
+#loginWrapper form:last-child { z-index: 2; }
+#loginWrapper.flipped form:first-child { z-index: 1; }
