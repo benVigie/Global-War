@@ -23,5 +23,5 @@
 	$db->close();
 
 	$res = array('playerList' => $players, 'currentPlayer' => $current);
-	echo (json_encode($res, JSON_FORCE_OBJECT));
+	echo (json_encode((object)$res));
 ?>		

@@ -8,7 +8,7 @@
 	function 	AjaxExit($raison) {
 		$error = array('error' => $raison);
 
-		echo (json_encode($error, JSON_FORCE_OBJECT));
+		echo (json_encode((object)$error));
 		exit;
 	}
 

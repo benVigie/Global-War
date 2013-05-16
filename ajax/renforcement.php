@@ -33,7 +33,7 @@
 			$db->close();
 
 			// Echo reponse
-			echo (json_encode($res, JSON_FORCE_OBJECT));
+			echo (json_encode((object)$res));
 			exit(0);
 		}
 	}
@@ -67,5 +67,5 @@
 	$db->close();
 
 	// Echo reponse
-	echo (json_encode($res, JSON_FORCE_OBJECT));
+	echo (json_encode((object)$res));
 ?>

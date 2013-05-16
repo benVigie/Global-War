@@ -25,7 +25,7 @@
 	// Tentative de fin de tour. Si tout est ok, on le notifie
 	if ($game->EndTurn($player)) {
 		// Si tout c'est bien déroulé jusqu'ici, on récupère le nombre d'unitées updaté
-		echo (json_encode(array('ok' => 'fin du tour'), JSON_FORCE_OBJECT));
+		echo (json_encode((object)(array('ok' => 'fin du tour'))));
 		$db->close();
 	}
 	// Sinon, message d'erreur

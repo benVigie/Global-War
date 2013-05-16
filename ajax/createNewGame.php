@@ -33,5 +33,5 @@
 	$response = array('game' => $newID, 'players' => $players, 'current' => $current);
 	$db->close();
 
-	echo (json_encode($response, JSON_FORCE_OBJECT));
+	echo (json_encode((object)$response));
 ?>

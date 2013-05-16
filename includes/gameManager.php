@@ -94,6 +94,9 @@
 				// Cas special - Dans une partie a 2 joueurs, 8 cases restent neutres
 				if ($nb_players === 2 && $i > 27) // Si on est dans les 14 derniere cases d'une partie a 2, player == 0 == neutre
 					$player = 0;
+				// Cas special 2 - Dans une partie a 4 joueurs, 2 cases restent neutres
+				if ($nb_players === 4 && $i > 39) // Si on est dans les 14 derniere cases d'une partie a 2, player == 0 == neutre
+					$player = 0;
 
 				if (!$this->_db->Execute("INSERT INTO `boards` (`board_id`, `board_game`, `board_player`, `board_place`, `board_units`, `board_date`) VALUES (NULL, '$game_id', '$player', '$case', '3', CURRENT_TIMESTAMP);"))
 					return ('Erreur lors de la cr&eacute;ation du jeu (2)');

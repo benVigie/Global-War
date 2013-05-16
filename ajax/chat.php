@@ -19,7 +19,7 @@
 		$db->close();
 
 		if ($recorded)
-			echo (json_encode(array('ok' => 'message enregistre'), JSON_FORCE_OBJECT));
+			echo (json_encode((object)(array('ok' => 'message enregistre'))));
 		else
 			AjaxExit("Impossible d'enregistre le message !");
 	}
@@ -40,7 +40,7 @@
 		// var_dump($res);
 		
 		// Envoie de la liste des messages
-		echo (json_encode(array('chat' => $res), JSON_FORCE_OBJECT));
+		echo (json_encode((object)(array('chat' => $res))));
 	}
 	// Si il manque des parametres
 	else

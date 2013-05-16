@@ -30,5 +30,5 @@
 	else
 		$response['lossePoints'] = "Vous avez quitt&eacute; une partie en cours. 3 points vous ont &eacute;t&eacute; amput&eacute;s !";
 
-	echo (json_encode($response, JSON_FORCE_OBJECT));
+	echo (json_encode((object)$response));
 ?>
