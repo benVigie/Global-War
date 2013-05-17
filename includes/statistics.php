@@ -142,7 +142,7 @@
 											JOIN `players_in_games` ON `games`.`game_id` = `players_in_games`.`pig_game`
 											WHERE `games`.`game_status` = 'ended' AND `players_in_games`.`pig_player` = '$this->_playerID'
 											ORDER BY `games`.`game_end_date` DESC
-											LIMIT 0 , 10");
+											LIMIT 0 , 8");
 			
 			if (is_null($rank) || (count($rank) < 2))
 				return (null);
