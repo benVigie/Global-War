@@ -181,7 +181,6 @@ function	GameEngine(gameID, playerID, map) {
 			}
 			
 			// On deroule le scenario de chaque coup joue
-			console.log('>>>>>>>>> Deroulement du scenario precedent');
 			if (datas != null) {
 
 				// Debug display
@@ -220,7 +219,7 @@ function	GameEngine(gameID, playerID, map) {
 						// Si il reste des actions a montrer, on l'affiche
 						else {
 							action = datas.shift();
-							showAction(action[3], action);
+							showAction(action[3], action, datas);
 						}
 					},
 					// 2000);
@@ -237,8 +236,30 @@ function	GameEngine(gameID, playerID, map) {
 		}
 	}
 
+	function skipDisplayScenario() {
+		window.clearInterval(_timer);
 
-	function showAction(type, action) {
+		$.ajax({
+			url: 'ajax/getMapState.php?game=' + _gameID,
+			dataType: 'json',
+			success: function (datas) {
+				// On remet la map d'équerre au cas ou
+				_map.AssignMap(datas);
+
+				// Pour finir, on fait la transition en appelant la fonction de renforts
+				$.ajax({
+					url: 'ajax/getRenforcementNumber.php?game=' + _gameID + '&player=' + _playerID + '&playerTurn',
+					dataType: 'json',
+					success: stepTwo_Renforcement,
+					error: notifyError
+				});
+			},
+			error: notifyError
+		});
+	}
+
+
+	function showAction(type, action, actionsList) {
 		var player = action[2],
 			pA = action[4],
 			pB = action[5],
@@ -255,6 +276,12 @@ function	GameEngine(gameID, playerID, map) {
 		
 		switch (type) {
 			case 'renforcement':
+				// Si les prochains renforts sont sur la meme case, autant tout mettre
+				while ((actionsList.length > 0) && (actionsList[0][3] === 'renforcement') && (actionsList[0][4] === pA)) {
+					vB = actionsList[0][7];
+					actionsList.shift();
+				}
+
 				window.setTimeout(function () {
 					_map.SetPastillaText(pA, vB);
 				}, (_scenarioActionDuration / 3));
@@ -405,7 +432,10 @@ function	GameEngine(gameID, playerID, map) {
 
 		switch (state) {
 			case EnumStates.Replay:
-				stateDiv.innerHTML = "Previously, in Global War...";
+				stateDiv.innerHTML = 'Previously, in Global War...<br/><a id="btn-skipScenario" class="m-btn blue"> Passer <i class="icon-white icon-forward"></i></a>';
+				document.querySelector('#btn-skipScenario').onclick = function() {
+					skipDisplayScenario();
+				};
 				_gameState = EnumStates.Replay;
 				break;
 
