@@ -460,7 +460,7 @@ function	GameEngine(gameID, playerID, map) {
 			case EnumStates.Last_move:
 				hideSelectedCountries();
 				_attackCountry = null;
-				stateDiv.innerHTML = 'L\'ultime déplacement <br/> <a id="btn-back-attack" class="m-btn red"> Attaquer encore <i class="icon-white icon-share"></i></a> <a id="btn-finish" class="m-btn green"> Fin du tour <i class="icon-white icon-flag"></i></a>';
+				stateDiv.innerHTML = 'L\'ultime déplacement <br/><span>Sélectionnez 2 de vos territoires</span><span>pour y transférer des unités</span> <a id="btn-back-attack" class="m-btn red"> Attaquer encore <i class="icon-white icon-share"></i></a> <a id="btn-finish" class="m-btn green"> Fin du tour <i class="icon-white icon-flag"></i></a>';
 
 				document.querySelector('#btn-back-attack').onclick = function () {
 					updateGameState(EnumStates.Attack);
@@ -674,11 +674,11 @@ function	GameEngine(gameID, playerID, map) {
 			}
 		};
 
-		// Update des unites sur le terrain
+		/*// Update des unites sur le terrain
 		place = document.querySelector('#text' + datas.Aplace.toString() + ' > tspan');
 		place.textContent = datas.AplaceUnits;
 		place = document.querySelector('#text' + datas.Dplace.toString() + ' > tspan');
-		place.textContent = datas.DplaceUnits;
+		place.textContent = datas.DplaceUnits;*/
 
 		// Update de l'encart des joueurs
 		updatePlayerInformations(datas.player.id, datas.player.units, datas.player.renforcements);
@@ -698,6 +698,13 @@ function	GameEngine(gameID, playerID, map) {
 			window.setTimeout(function () {
 				// Changement de propriétaire !
 				updateInvadedCountry(_playerID, datas.Dplace);
+
+				// Update des unites sur le terrain
+				place = document.querySelector('#text' + datas.Aplace.toString() + ' > tspan');
+				place.textContent = datas.AplaceUnits;
+				place = document.querySelector('#text' + datas.Dplace.toString() + ' > tspan');
+				place.textContent = datas.DplaceUnits;
+
 				// Ouvre la petite fenetre de deplacement
 				openMoveWindow(datas.AplaceUnits, datas.DplaceUnits);
 				// Changement de l'état du jeu
@@ -705,8 +712,15 @@ function	GameEngine(gameID, playerID, map) {
 			}, 2000);
 
 		}
-		else
+		else {
+			// Update des unites sur le terrain
+			place = document.querySelector('#text' + datas.Aplace.toString() + ' > tspan');
+			place.textContent = datas.AplaceUnits;
+			place = document.querySelector('#text' + datas.Dplace.toString() + ' > tspan');
+			place.textContent = datas.DplaceUnits;
+
 			updateGameState(EnumStates.Attack);
+		}
 	}
 
 	/**

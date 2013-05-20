@@ -85,8 +85,8 @@
 				$game = array('id' => $g['game_id'], 'current' => $g['game_current_player'], 'started' => FormatDate($g['Date']));
 
 				// On recupere les noms des opposants pour les integrer dans l'UI
-				// $opponents = $this->_db->GetRows("SELECT `players`.`player_nick` FROM `players` JOIN `players_in_games` ON `players`.`player_id` = `players_in_games`.`pig_player` WHERE `players_in_games`.`pig_game` = '$g[game_id]' AND `players_in_games`.`pig_player` != '$this->_userId'");
-				$opponents = $this->_db->GetRows("SELECT `players`.`player_nick` AS `Nick`, `players`.`player_id` AS `ID`, `players_in_games`.`pig_color` AS `Color` FROM `players` JOIN `players_in_games` ON `players`.`player_id` = `players_in_games`.`pig_player` WHERE `players_in_games`.`pig_game` = '$g[game_id]'");
+				$query = "SELECT `players`.`player_nick` AS `Nick`, `players`.`player_id` AS `ID`, `players_in_games`.`pig_color` AS `Color` FROM `players_in_games` JOIN `players` ON `players`.`player_id` = `players_in_games`.`pig_player` WHERE `players_in_games`.`pig_game` = '$g[game_id]' ORDER BY `players_in_games`.`pig_order` ASC";
+				$opponents = $this->_db->GetRows($query);
 				$op_str = '';
 				if (!is_null($opponents)) {
 					foreach ($opponents as &$op) {
@@ -96,6 +96,7 @@
 						$op['Pic'] = self::GetUserPicture($op['ID']);
 					}
 				}
+
 				$game['opponents'] = $op_str;
 				$game['players'] = $opponents;
 

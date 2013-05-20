@@ -191,6 +191,27 @@
 						Bon jeu a tous et amusez vous bien ;) !
 					</p>
 
+					<p>
+						<h3>Grosse update de la pentecôte</h3>
+						Pendant que vous profitiez du soleil et des températures quasi estivales de ce long week-end, je n'ai pas chomé !<br/>
+						Le plus urgents a été fait: j'ai corrigé quasiment tout les bugs et/ou améliorations que vous m'avez remonté. Merci à tous pour votre collaboration à Global War :)
+					</p>
+					<p>
+						Dans le détail on retrouvera:
+						<ul>
+							<li>Ajout d'un bouton "Passer" lors du déroulement des coups précédents</li>
+							<li>Ces mêmes déroulement ont été améliorés. Maintenant on ne voit plus chaque renforts se placer, si un joueur pose 30 renforts au même endroit, on voit le territoire prendre les 30 en une fois. Ca change la vie !</li>
+							<li>L'ordre des joueurs est maintenant le même dans l'accueil et dans la partie. C'est l'ordre de jeu</li>
+							<li>Normallement il n'y aura plus de problèmes de déplacement après une attaque</li>
+							<li>Lors de la conquète d'un territoire, c'est l'ensemble des unités qui se déplacent et plus seulement 3 (bien sûr une restante sur le territoire attaquant)</li>
+							<li>Update de la fenêtere de dernier déplacement pour clarifier la situation</li>
+							<li>Les statistiques tiennent maintenant compte de l'ensemble des parties jouées et non pas des 8 dernières</li>
+						</ul>
+					</p>
+					<p>
+						Encore une fois merci à tous ! Il reste encore pas mql de bug mais les choses avancent bien. Alors continuez à "tester" le jeu et à me remonter tous les bugs. Bonne chance ;)
+					</p>
+
 
 				</article>
 
@@ -201,14 +222,9 @@
 						<li class="improvement"><span>&#x22;</span> Ajouter des animations lors de combats</li>
 						<li class="improvement"><span>&#x22;</span> Donner un nom aux parties</li>
 						<li class="improvement"><span>&#x22;</span> Ajouter un mode multijoueur</li>
-						<li class="improvement done"><span>&#x22;</span> Lors de notre tour de jeu, avoir un résumé des coups joué par les adversaires</li>
-						<li class="improvement done"><span>&#x22;</span> Voir son classement quand on est pas dans le top 3</li>
 						<li class="improvement"><span>&#x22;</span> Mettre au propre le JS (Require.js)</li>
-						<li class="improvement done"><span>&#x22;</span> Rendre le CSS compliant avec Firefox (surtout pour les animations)</li>
 						<li class="improvement"><span>&#x22;</span> Permettre de modifier sa photo de profil</li>
 						<li class="bug"><span>&#x66;</span> Attaques trop rapides/rapprochees ne sont pas prises en compte en BDD (probleme timestamp)</li>
-						<li class="bug done"><span>&#x66;</span> Certains clic ne sont pas pris en compte ? (Firefox)</li>
-						<li class="bug done"><span>&#x66;</span> Quand un joueur quitte une partie, elle s'arrete</li>
 					</ul>
 				</article>
 

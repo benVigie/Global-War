@@ -196,8 +196,7 @@
 							podium[i].classList.remove('startState');
 
 					/* TEMP: Sereur messages */
-					displayMessage("Les parties à 2 joueurs ont été rééquilibrés. Moins de positions et de renforts dès le débuts.", 'Mise à jour');
-					displayMessage('Une question sur les bonus ? <a href="info.php#rules">Consultez les règles !</a>', 'Info');
+					displayMessage('Pour voir le détail de la mise à jour, <a href="info.php#infos">c\'est ici !</a>', 'Update de la pentecôte');
 					/* /TEMP: Sereur messages */
 				});
 

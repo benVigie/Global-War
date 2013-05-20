@@ -23,8 +23,6 @@
 
 	// TODO: Vérifier que le joueur a acces a cette partie
 	$game = new gameManager($db, $_GET['game']);
-	// $smt->assign('Players', $game->GetPlayers());
-	// $smt->assign('Map', $game->LoadGame());
 
 	// On recupere l'id du joueur
 	$currentUser = new User($db, $_SESSION['user-id']);

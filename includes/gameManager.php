@@ -134,7 +134,7 @@
 						FROM `boards`
 						WHERE `boards`.`board_date` <= $limit
 						AND `boards`.`board_game` = '$this->_gameID' 
-						ORDER BY `boards`.`board_date` DESC) AS `Join`
+						ORDER BY `boards`.`board_id` DESC) AS `Join`
 						GROUP BY `Join`.`board_place`";
 
 			$map = $this->_db->GetRows($query);
@@ -199,7 +199,7 @@
 		*/
 		public function 	GetLastAction($player) {
 			// Requete 1:  Recuperation de l'heure du dernier coup du joueur
-			$lastAction = $this->_db->GetRows("SELECT `strokes`.`stroke_date` FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' AND `strokes`.`stroke_player` = '$player' ORDER BY `strokes`.`stroke_date` DESC LIMIT 0, 1");
+			$lastAction = $this->_db->GetRows("SELECT `strokes`.`stroke_date` FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' AND `strokes`.`stroke_player` = '$player' ORDER BY `strokes`.`stroke_id` DESC LIMIT 0, 1");
 
 			// requete 2: On recupere tous les coups joue de la partie...
 			$query = "SELECT * FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' ";
@@ -211,7 +211,7 @@
 			}
 
 			// ... Pour finir on range la requete par date croissante
-			$query .= "ORDER BY `strokes`.`stroke_date` ASC";
+			$query .= "ORDER BY `strokes`.`stroke_id` ASC";
 			$actions = $this->_db->GetRows($query);
 
 			return ($actions);
@@ -229,7 +229,7 @@
 								SELECT `boards`.`board_place`, `boards`.`board_player`
 								FROM  `boards` 
 								WHERE  `boards`.`board_game` = '$this->_gameID' 
-								ORDER BY  `boards`.`board_date` DESC) AS `LATEST`
+								ORDER BY  `boards`.`board_id` DESC) AS `LATEST`
 							GROUP BY `LATEST`.`board_place`) AS `CURRENT_BOARD`
 						WHERE `CURRENT_BOARD`.`board_player` = '$player'";
 			
@@ -264,7 +264,7 @@
 								SELECT `boards`.`board_place`, `boards`.`board_units`, `boards`.`board_player`
 								FROM  `boards` 
 								WHERE  `boards`.`board_game` = '$this->_gameID' 
-								ORDER BY  `boards`.`board_date` DESC) AS `LATEST`
+								ORDER BY  `boards`.`board_id` DESC) AS `LATEST`
 							GROUP BY `LATEST`.`board_place`) AS `CURRENT_BOARD`
 						WHERE `CURRENT_BOARD`.`board_player` = '$player'";
 			
@@ -362,14 +362,14 @@
 			// Soit le territoire attaqué est battu. Dans ce cas on calcul le minimum a mettre sur ce territoire et on update les 2
 			else {
 				// Calcul des deploiment inherent a l'attaque
-				if ($totalUnitsA > 3) {
+				/*if ($totalUnitsA > 3) {
 					$totalUnitsD = 3;
 					$totalUnitsA -= 3;
 				}
-				else {
+				else {*/
 					$totalUnitsD = $totalUnitsA - 1;
 					$totalUnitsA = 1;
-				}
+				/*}*/
 
 				// Insertion en BDD
 				$this->_db->Execute("INSERT INTO `boards` (`board_id`, `board_game`, `board_player`, `board_place`, `board_units`, `board_date`) VALUES (NULL, '$this->_gameID', '$player', '$Aplace', '$totalUnitsA', CURRENT_TIMESTAMP)");
@@ -417,7 +417,7 @@
 		*	@return Boolean True si le territoire lui appartient, false sinon
 		*/
 		public function 	CheckTerritoryOwner($player, $place) {
-			$pl = $this->_db->GetRows("SELECT `boards`.`board_player` FROM `boards` WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_place` = '$place' ORDER BY `boards`.`board_date` DESC LIMIT 0, 1");
+			$pl = $this->_db->GetRows("SELECT `boards`.`board_player` FROM `boards` WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_place` = '$place' ORDER BY `boards`.`board_id` DESC LIMIT 0, 1");
 
 			if (is_null($pl))
 				return (null);
@@ -778,7 +778,7 @@
 		*	@return Int L'id du joueur
 		*/
 		private function 	getTerritoryOwner($place) {
-			$pl = $this->_db->GetRows("SELECT `boards`.`board_player` FROM `boards` WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_place` = '$place' ORDER BY `boards`.`board_date` DESC LIMIT 0, 1");
+			$pl = $this->_db->GetRows("SELECT `boards`.`board_player` FROM `boards` WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_place` = '$place' ORDER BY `boards`.`board_id` DESC LIMIT 0, 1");
 
 			if (is_null($pl))
 				return (null);

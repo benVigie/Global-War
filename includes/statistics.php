@@ -141,15 +141,19 @@
 											FROM `games`
 											JOIN `players_in_games` ON `games`.`game_id` = `players_in_games`.`pig_game`
 											WHERE `games`.`game_status` = 'ended' AND `players_in_games`.`pig_player` = '$this->_playerID'
-											ORDER BY `games`.`game_end_date` DESC
-											LIMIT 0 , 8");
+											ORDER BY `games`.`game_end_date` ASC");
+											// ORDER BY `games`.`game_end_date` DESC
+											// LIMIT 0 , 8");
 			
 			if (is_null($rank) || (count($rank) < 2))
 				return (null);
 
 
-			// On traite chaque donnee en partant de la plus ancienne pour remonter vers la derniere partie
-			for ($i = (count($rank) - 1); $i >= 0 ; $i--) {
+			/*// On traite chaque donnee en partant de la plus ancienne pour remonter vers la derniere partie
+			for ($i = (count($rank) - 1); $i >= 0 ; $i--) {*/
+			// Pour toutes les parties
+			$max = count($rank);
+			for ($i = 0; $i < $max ; $i++) {
 				// On incremente le total de parties
 				$totalGames++;
 
@@ -157,23 +161,26 @@
 				if ($rank[$i]['pig_player_status'] === 'winner')
 					$nbVictories++;
 
-				// Set de son ratio de victoire courant
-				$ret['values'] .= ($ret['values'] === '') ? ceil($nbVictories / $totalGames * 100) : ',' . ceil($nbVictories / $totalGames * 100);
+				// Si on est dans les 8 dernieres parties, alors on stock les valeures pour les afficher dans le graph
+				if ($i >= ($max - 8)) {
+					// Set de son ratio de victoire courant
+					$ret['values'] .= ($ret['values'] === '') ? ceil($nbVictories / $totalGames * 100) : ',' . ceil($nbVictories / $totalGames * 100);
 
-				// Ajout du bon libelle
-				switch ($rank[$i]['pig_player_status']) {
-					case 'winner':
-						$ret['label'] .= ($ret['label'] === '') ? "'Victoire'" : ',"Victoire"';
-						break;
-					case 'two':
-						$ret['label'] .= ($ret['label'] === '') ? '"Second"' : ',"Second"';
-						break;
-					case 'three':
-						$ret['label'] .= ($ret['label'] === '') ? '"Troisième"' : ',"Troisième"';
-						break;
-					case 'four':
-						$ret['label'] .= ($ret['label'] === '') ? '"Mega loose"' : ',"Mega loose"';
-						break;
+					// Ajout du bon libelle
+					switch ($rank[$i]['pig_player_status']) {
+						case 'winner':
+							$ret['label'] .= ($ret['label'] === '') ? "'Victoire'" : ',"Victoire"';
+							break;
+						case 'two':
+							$ret['label'] .= ($ret['label'] === '') ? '"Second"' : ',"Second"';
+							break;
+						case 'three':
+							$ret['label'] .= ($ret['label'] === '') ? '"Troisième"' : ',"Troisième"';
+							break;
+						case 'four':
+							$ret['label'] .= ($ret['label'] === '') ? '"Mega loose"' : ',"Mega loose"';
+							break;
+					}
 				}
 			}
 
