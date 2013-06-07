@@ -57,6 +57,6 @@
 					<a onClick="toggleNotif();" class="user-notif user-fade-effect" data-notif="{$User_notif}">Notifications: </a> -
 					<a href="home.php?logout" class="user-fade-effect user-change-color">Déconnection</a>
 				</div>
-				<img class="user-picture" src="{$User_pic}" alt="profil picture" />
+				<img class="user-picture" src="{$User_pic}" onclick="$('.js-modal-change-picture').data('kit-modal').open();" alt="profil picture" />
 			</aside>
 		</header>

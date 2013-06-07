@@ -17,6 +17,12 @@
 		Display('home.tpl', 'Home');
 	}
 
+	// Si un changement de photo est requis...
+	if (isset($_FILES['newPic'])) {
+		CreateVignette($_FILES['newPic'], ('images/users/' . $_SESSION['user-id'] . '.jpg'), 75, 75);
+		header('Location: home.php');
+	}
+
 	// On recupere l'instance du joueur
 	$currentUser = new User($db, $_SESSION['user-id']);
 

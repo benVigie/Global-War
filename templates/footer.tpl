@@ -29,9 +29,28 @@
 				</form>
 			</div>
 		</div>
+
+		<div class="-modal js-modal-change-picture">
+			<div class="-modal-header">Changement de sa photo de profil<i class="-closer">×</i></div>
+			<div class="-modal-content" id="bug-report-content" style="min-height: 130px;">
+				<form method="post" action="home.php" enctype="multipart/form-data" id="changePic">
+					<div class="uploader" id="uniform-fileInputS" style="display: block;margin-bottom: 20px;">
+						<input type="file" name="newPic" class="fileInput" id="fileInputS" style="opacity: 0; " />
+						<span class="filename">Photo</span>
+						<span class="action">Choose File</span>
+					</div>
+					
+					<a href="#" onclick="document.querySelector('#changePic').submit();" class="m-btn blue"><i class="icon-check icon-white"></i> Changer ma photo !</a>
+				</form>
+			</div>
+		</div>
+
 		<script type="text/javascript">
 			/* TEMP: fenetre de bug */
 			$('.js-modal-report').modal({
+				animation: 'blurIn'
+			});
+			$('.js-modal-change-picture').modal({
 				animation: 'blurIn'
 			});
 
