@@ -37,9 +37,9 @@
 					</p>
 					<p>
 						<h3>1) Placement de nouvelles unités</h3>
-						Au début de chaque tour, vous disposez d'au moins 3 unités. Plus vous possédez de territoire et plus vous aurez d'unités bonus. 3 territoires vous octroient 1 unité supplémentaire, donc un joueur qui possède de 15 à 17 territoires aura 5 unités à placer.<br/>
-						Vous pouvez placer autant d'unités que vous voulez sur un territoire qui vous appartient. Une fois toute les unités à votre disposition placées, vous passez en phase 2: l'attaque.<br/>
-						<strong>Bonus: </strong>Occuper un continent entier vous raporte des unités en bonus. Pour en bénéficer, vous devez avoir au debut de votre tour au moins une unitée sur chaque pays d'un continent. Ces derniers sont visible par couleur et rapporte un nombre différent de bonus attribué comme ceci:
+						Au début de chaque tour, vous disposez d'au moins 3 unités. Plus vous possédez de territoire et plus vous aurez d'unités bonus. 3 territoires vous octroient 1 unité supplémentaire. Un joueur qui possède de 12 à 14 territoires aura 4 unités à placer, s'il a 15 à 17 territoires il aura 5 unités à placer, etc...<br/>
+						Vous pouvez placer autant d'unités que vous voulez sur un territoire qui vous appartient. Une fois toute vos unités placées, vous passez en phase 2: l'attaque.<br/>
+						<strong>Bonus: </strong>Occuper un continent entier vous raporte des unités en bonus. Pour en bénéficer, vous devez avoir au début de votre tour au moins une unitée sur chaque pays d'un continent. Ces derniers sont visible par couleur et rapporte un nombre différent de bonus attribué comme ceci:
 						<ul>
 							<li>Amérique du Nord (gris): +5 unités</li>
 							<li>Amérique du Sud (rose): +2 unités</li>
@@ -223,8 +223,8 @@
 						<li class="improvement"><span>&#x22;</span> Donner un nom aux parties</li>
 						<li class="improvement"><span>&#x22;</span> Ajouter un mode multijoueur</li>
 						<li class="improvement"><span>&#x22;</span> Mettre au propre le JS (Require.js)</li>
-						<li class="improvement"><span>&#x22;</span> Permettre de modifier sa photo de profil</li>
-						<li class="bug"><span>&#x66;</span> Attaques trop rapides/rapprochees ne sont pas prises en compte en BDD (probleme timestamp)</li>
+						<li class="improvement done"><span>&#x22;</span> Permettre de modifier sa photo de profil</li>
+						<li class="bug done"><span>&#x66;</span> Attaques trop rapides/rapprochees ne sont pas prises en compte en BDD (probleme timestamp)</li>
 					</ul>
 				</article>
 

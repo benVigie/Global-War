@@ -115,6 +115,11 @@ function	MapSVG() {
 		var plan = document.querySelector('#map');
 		plan.addEventListener("mousewheel", mouseWheelHandler, false);
 		plan.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
+
+		// Zoom sur la map et replacement
+		_width = Math.round(_width * 0.8);
+		_height = Math.round(_height * 0.8);
+		_raph_paper.setViewBox(50, 80, _width, _height, true);
 	}
 
 	that.AssignMap = function (data) {

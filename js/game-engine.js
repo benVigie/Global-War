@@ -28,6 +28,8 @@ function	GameEngine(gameID, playerID, map) {
 		_playerColor = null,			// Couleur du joueur. Utilise dans la reconnaissance de territoire
 		_ownerTerritories = [],			// Tableau des territoires appartenant au joueur
 		_timer,							// Timer utilisé en mode scénario: toutes les x secondes il affiche une action
+		_timerAction,					// Timer utilisé pour afficher l'action
+		_timerClearAreas,				// Timer utilisé pour resetté les territoires mis en surbrillance par le scénario
 		_scenarioActionDuration = 2000,	// Temps entre chaque action affiché en mode scénario
 		_map = map,						// pointeur sur l'objet map  
 		_placeA, _placeB;				// Variables pour stocker le nombre d'unités de 2 territoires
@@ -173,7 +175,6 @@ function	GameEngine(gameID, playerID, map) {
 	function onScenarioReceive (datas) {
 		// Pour pas avoir de caca...
 		if (datas !== null) {
-			// console.log(datas);
 			// En cas d'erreur...
 			if (datas.error) {
 				displayMessage(datas.error, 'Ouuups !', 'error');
@@ -237,7 +238,19 @@ function	GameEngine(gameID, playerID, map) {
 	}
 
 	function skipDisplayScenario() {
+		var oldCountries = oldCountries = document.querySelectorAll('.highLight'),
+			len = oldCountries.length;
+
+		// On clear tout les timers pour éviter de mettre la nouvelle carte à jour avec de fausses infos
 		window.clearInterval(_timer);
+		window.clearTimeout(_timerAction);
+		window.clearTimeout(_timerClearAreas);
+
+		// On nettoie des zones possiblement sélectionnées
+		if (oldCountries) {
+			for (var i = 0; i < len; i++)
+				oldCountries[i].classList.remove('highLight');
+		}
 
 		$.ajax({
 			url: 'ajax/getMapState.php?game=' + _gameID,
@@ -282,7 +295,7 @@ function	GameEngine(gameID, playerID, map) {
 					actionsList.shift();
 				}
 
-				window.setTimeout(function () {
+				_timerAction = window.setTimeout(function () {
 					_map.SetPastillaText(pA, vB);
 				}, (_scenarioActionDuration / 3));
 				break;
@@ -296,7 +309,7 @@ function	GameEngine(gameID, playerID, map) {
 				nbA -= parseInt(vB, 10);
 				nbB -= parseInt(vA, 10);
 
-				window.setTimeout(function () {
+				_timerAction = window.setTimeout(function () {
 					_map.SetPastillaText(pA, nbA);
 					_map.SetPastillaText(pB, nbB);
 
@@ -307,7 +320,7 @@ function	GameEngine(gameID, playerID, map) {
 				break;
 
 			case 'move':
-				window.setTimeout(function () {
+				_timerAction = window.setTimeout(function () {
 					_map.SetPastillaText(pA, vA);
 					_map.SetPastillaText(pB, vB);
 				}, (_scenarioActionDuration / 3));
@@ -319,7 +332,7 @@ function	GameEngine(gameID, playerID, map) {
 
 		// Dans la foulee on programme la suppression des zones selectionnées
 		oldCountries = document.querySelectorAll('.highLight');
-		window.setTimeout(function () {
+		_timerClearAreas = window.setTimeout(function () {
 			for (var i = 0; i < oldCountries.length; i++)
 				oldCountries[i].classList.remove('highLight');
 		}, (_scenarioActionDuration * (2 / 3)));
@@ -460,7 +473,7 @@ function	GameEngine(gameID, playerID, map) {
 			case EnumStates.Last_move:
 				hideSelectedCountries();
 				_attackCountry = null;
-				stateDiv.innerHTML = 'L\'ultime déplacement <br/><span>Sélectionnez 2 de vos territoires</span><span>pour y transférer des unités</span> <a id="btn-back-attack" class="m-btn red"> Attaquer encore <i class="icon-white icon-share"></i></a> <a id="btn-finish" class="m-btn green"> Fin du tour <i class="icon-white icon-flag"></i></a>';
+				stateDiv.innerHTML = 'L\'ultime déplacement <br/><span>Sélectionnez 2 de vos territoires</span><span>pour y transférer des unités</span> <a id="btn-back-attack" class="m-btn blue"> Attaquer encore <i class="icon-white icon-share"></i></a> <a id="btn-finish" class="m-btn red"> Fin du tour <i class="icon-white icon-flag"></i></a>';
 
 				document.querySelector('#btn-back-attack').onclick = function () {
 					updateGameState(EnumStates.Attack);

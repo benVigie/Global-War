@@ -92,7 +92,7 @@ h1 {
 */
 #main-content {
 	float: left;
-	width: 55%;
+	width: 50%;
 	margin-right: 4%;
 }
 #main-content > div {
@@ -197,6 +197,7 @@ h1 {
 #rank-and-stat {
 	float: right;
 	width: 40%;
+	min-width: 460px;
 }
 
 
