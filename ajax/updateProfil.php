@@ -26,6 +26,14 @@
 		else
 			$res['error'] = 'Impossible de changer les preferences de notifications.';
 	}
+	else if (isset($_GET['availability'])) {
+		if ($user->UpdateAvailability($_GET['availability'])){
+			$res['modif'] = 'availability';
+			$res['value'] = $_GET['availability'];
+		}
+		else
+			$res['error'] = 'Impossible de changer les preferences de notifications.';
+	}
 	else if (isset($_GET['email'])) {
 		if ($user->UpdateEmail($_GET['email'])){
 			$res['modif'] = 'email';

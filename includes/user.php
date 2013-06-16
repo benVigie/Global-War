@@ -53,6 +53,7 @@
 				$_SESSION['user-nick'] = $infos[0]['player_nick'];
 				$_SESSION['user-score'] = $infos[0]['player_score'];
 				$_SESSION['user-notif'] = $infos[0]['player_notification'];
+				$_SESSION['user-availability'] = $infos[0]['player_available'];
 				$_SESSION['user-email'] = $infos[0]['player_mail'];
 			}
 
@@ -61,6 +62,7 @@
 			$smt->assign('User_nick', $_SESSION['user-nick']);
 			$smt->assign('User_score', $_SESSION['user-score']);
 			$smt->assign('User_notif', $_SESSION['user-notif']);
+			$smt->assign('User_availability', $_SESSION['user-availability']);
 			$smt->assign('User_email', $_SESSION['user-email']);
 			$smt->assign('User_pic', self::GetUserPicture($_SESSION['user-id']));
 
@@ -119,11 +121,12 @@
 				unset($_SESSION['user-nick']);
 				unset($_SESSION['user-score']);
 				unset($_SESSION['user-notif']);
+				unset($_SESSION['user-availability']);
 			}
 		}
 
 		/**
-		*	Modifie les preferences de noitification de l'utilisateur
+		*	Modifie les preferences de notification de l'utilisateur
 		*	@param: {String} $value: 0 ou 1
 		*	@return: {Boolean} True si le changement s'est effectue, false sinon
 		*/
@@ -133,6 +136,22 @@
 
 			if ($this->_db->Execute("UPDATE `players` SET `player_notification` = '$value' WHERE `players`.`player_id` = '$this->_userId'")) {
 				$_SESSION['user-notif'] = $value;
+				return (true);
+			}
+			return (false);
+		}
+
+		/**
+		*	Modifie la disponibilitée du joueur
+		*	@param: {String} 	$value: 0 si indisponible, ou 1 si dispo
+		*	@return: {Boolean} 	True si le changement s'est effectue, false sinon
+		*/
+		public function 	UpdateAvailability($value) {
+			if ($value !== '0' && $value !== '1')
+				return (false);
+
+			if ($this->_db->Execute("UPDATE `players` SET `player_available` = '$value' WHERE `players`.`player_id` = '$this->_userId'")) {
+				$_SESSION['user-availability'] = $value;
 				return (true);
 			}
 			return (false);

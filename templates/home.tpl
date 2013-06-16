@@ -196,7 +196,7 @@
 							podium[i].classList.remove('startState');
 
 					/* TEMP: Sereur messages */
-					displayMessage('Pour voir le détail de la mise à jour, <a href="info.php#infos">c\'est ici !</a>', 'Update de la pentecôte');
+					displayMessage('Pour voir le détail de la mise à jour, <a href="info.php#infos">c\'est ici !</a><br/>N\'oubliez pas de ctrl-F5 ;)', 'Grosse mise à jour !');
 					/* /TEMP: Sereur messages */
 				});
 

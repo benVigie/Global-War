@@ -362,14 +362,8 @@
 			// Soit le territoire attaqué est battu. Dans ce cas on calcul le minimum a mettre sur ce territoire et on update les 2
 			else {
 				// Calcul des deploiment inherent a l'attaque
-				/*if ($totalUnitsA > 3) {
-					$totalUnitsD = 3;
-					$totalUnitsA -= 3;
-				}
-				else {*/
-					$totalUnitsD = $totalUnitsA - 1;
-					$totalUnitsA = 1;
-				/*}*/
+				$totalUnitsD = $totalUnitsA - 1;
+				$totalUnitsA = 1;
 
 				// Insertion en BDD
 				$this->_db->Execute("INSERT INTO `boards` (`board_id`, `board_game`, `board_player`, `board_place`, `board_units`, `board_date`) VALUES (NULL, '$this->_gameID', '$player', '$Aplace', '$totalUnitsA', CURRENT_TIMESTAMP)");
@@ -923,9 +917,8 @@
 
 			// Verifier si le joueur a perdu
 			if ($this->thisThisTheEndMyFriend($player)) { // Si oui, on verifie combien de joueurs sont encore présent
-				$nb = $this->_db->GetRows("SELECT COUNT(`players_in_games`.`pig_player`) AS `NB` FROM `players_in_games` WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player_status` = 'alive' ORDER BY `players_in_games`.`pig_player_status` = 'alive'");
-				$nb_players = $nb[0]['NB'];
-
+				$nb_players = count($this->GetPlayers(true));
+				
 				// Si il ne reste qu'un joueur, on cloture cette partie
 				if ($nb_players <= 1) {
 					// Cloture le joueur courant en le marquant comme gagnant
@@ -960,28 +953,15 @@
 			switch ($nb[0]['NB']) {
 				case '4':
 					$status = 'four';
-					$points = 0;
 					break;
 				case '3':
 					$status = 'three';
-					if ($nb[0]['Total'] == '4')
-						$points = 2;
 					break;
 				case '2':
 					$status = 'two';
-					if ($nb[0]['Total'] == '4')
-						$points = 3;
-					else if ($nb[0]['Total'] == '3')
-						$points = 2;
 					break;
 				default:
 					$status = 'winner';
-					if ($nb[0]['Total'] == '4')
-						$points = 5;
-					else if ($nb[0]['Total'] == '3')
-						$points = 4;
-					else if ($nb[0]['Total'] == '2')
-						$points = 3;
 					break;
 			}
 
@@ -991,12 +971,14 @@
 
 			// Update du score
 			if ($abandon === false) {
-				if (!$this->_db->Execute("UPDATE `players` SET `player_score` = `player_score` + $points WHERE `players`.`player_id` = '$player'"))
-					echo "caca tout mou x2";
+				// Si le joueur courant est le gagnant, pas besoin d'updater son score
+				if ($status !== 'winner')
+					$points = $this->updateScore($player, $this->isThisGameInCurrentPeriod());
 			}
 			else if ($malus != 0) {
 				if (!$this->_db->Execute("UPDATE `players` SET `player_score` = `player_score` + $malus WHERE `players`.`player_id` = '$player'"))
 					echo "caca tout mou x3";
+				$points = $malus;
 			}
 
 			// Envoie du mail
@@ -1004,6 +986,53 @@
 				$this->sendPlayerNotification($player, array('type' => 'endGame',
 																'position' => $status,
 																'points' => $points));
+		}
+
+		/**
+		*	Met le score des joueurs à jour quand une partie se termine.
+		*	Dans les faits, on va enlever autant de points qu'il reste de joueurs à $player et redistribuer ces points aux joueurs encore en lice.
+		*
+		*	@param {Int} $player 				L'id du joueur
+		*	@param {Boolean} $isCurrentPeriod 	True si la partie compte pour la période courante
+		*	@return {Int} 	Score enlevé au joueur
+		*/
+		private function updateScore($player, $isCurrentPeriod) {
+			$alivePlayers;
+			$pointsLoose = 0;
+			$p_id;
+			$query;
+
+			// Première étape, on récupère les joueurs encore en jeu
+			$alivePlayers = $this->GetPlayers(true);
+			// Le perdant redistribue un de ses points à chaque joueur encore en jeu
+			$pointsLoose = count($alivePlayers);
+
+			// Update du score global du joueur
+			$query = "UPDATE `players` SET `player_global_score` = `player_global_score` - $pointsLoose";
+			// Si la partie compte pour la période courante, update du score courant du joueur
+			if ($isCurrentPeriod)
+				$query .= ", `player_score` = `player_score` - $pointsLoose";
+			$query .= " WHERE `players`.`player_id` = '$player'";
+			
+			// Update in DB
+			$this->_db->Execute($query);
+
+			// Maintenant que les points ont été enlevés au perdant, on les redistribue aux personnes encore en jeu
+			foreach ($alivePlayers as $p) {
+				$p_id = $p['id'];
+
+				// On ajoute un point au score global du joueur
+				$query = "UPDATE `players` SET `player_global_score` = `player_global_score` + 1";
+				// Si la partie compte pour la période courante, on donne également un point au score courant du joueur
+				if ($isCurrentPeriod)
+					$query .= ", `player_score` = `player_score` + 1";
+				$query .= " WHERE `players`.`player_id` = '$p_id'";
+				
+				// Update in DB
+				$this->_db->Execute($query);
+			}
+
+			return ($pointsLoose);
 		}
 
 		/**
@@ -1048,6 +1077,31 @@
 
 			// Le virer avec son malus
 			$this->closeGameForPlayer($player, true, -3);
+		}
+
+		/**
+		*	Retourne un booleen pour savoir si la partie compte pour la période courante
+		*
+		*	@param
+		*	@return {Boolean} True si la partie compte pour la periode courante, sinon False
+		*/
+		private function isThisGameInCurrentPeriod() {
+			// Récupération du timestamp de debut de la période courante
+			$startCurrentPeriod = $this->_db->GetRows("SELECT UNIX_TIMESTAMP(`game_periods`.`gp_start_date`) AS `Start` FROM `game_periods` ORDER BY `game_periods`.`gp_start_date` DESC LIMIT 0, 1");
+
+			// Récupération de la date de début de partie
+			$gameStartTime = $this->_db->GetRows("SELECT UNIX_TIMESTAMP(`games`.`game_start_date`) AS `Start` FROM `games` WHERE `games`.`game_id` = '$this->_gameID'");
+
+			if ((is_null($gameStartTime[0])) || (is_null($startCurrentPeriod[0])))
+				return (false);
+
+			$startCurrentPeriod = intval($startCurrentPeriod[0]['Start']);
+			$gameStartTime = intval($gameStartTime[0]['Start']);
+			
+			if ($gameStartTime < $startCurrentPeriod)
+				return (false);
+
+			return (true);
 		}
 
 		/**

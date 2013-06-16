@@ -97,10 +97,13 @@
 					<p>
 						Quand vous êtes prêt, cliquez sur le bouton "Lancer la partie". La partie est alors rajoutée dans votre liste de jeu et est prête à jouer.
 					</p>
+					<p>
+						<strong>Astuce:</strong> Vous partez en vacances ? Vous avez trop de parties en cours et ne voulez pas être invité dans de nouvelles parties ? Vous pouvez à tout moment changer votre disponibilitée en cliquant sur le bouton "Disponible" en haut à droite de l'écran.
+					</p>
 
 					<p>
 						<h3>Dans le jeu</h3>
-						Vous pouvez prendre connaissance des règles du jeu dans la partie <a href="rules">Règles du jeu</a>.<br/>
+						Vous pouvez prendre connaissance des règles du jeu dans la partie <a href="#rules">Règles du jeu</a>.<br/>
 						De manière générale, tout se joue en cliquant sur la "pastille" d'un territoire. La pastille est un rond de couleur avec un nombre à l'interieur. Chaque territoire en possède une.<br/>
 						La pastille donne 2 informations:
 						<ul>
@@ -114,20 +117,36 @@
 						L'encart en haut à droite vous donne le nombre d'unités restantes à placer. Cliquer sur un territoire vous appartenant pour renforcer ce territoire d'une unité supplémentaire.
 					</p>
 					<p>
+						Si vous avez des bonus à disposition, ces derniers apparaissent dans un bouton bleu. En cliquant dessus, vous choisissez de les prendre et ces bonus s'ajoutent à votre total de renfort.
+					</p>
+					<p>
 						<h3>Lors de la phase d'attaque</h3>
-						Lors de cette phase, vous allez devoir désigner un territoire attaquant puis sa cible.<br/>
-						Cliquer sur n'importe quel territoire vous appartenant. Vous verrez apparaitre en surbrillance les territoires "attaquables". Choisissez en un puis cliquer sur sa pastille: une fenêtre d'attaque s'ouvre alors. Dans cette fenêtre, vous pouvez voir les unités qui seront engagées dans le combat (de 1 à 3 pour l'attaque et de 1 à 2 pour la défense).<br/>
-						Cliquez sur le bouton "Attaquer" pour lancer l'assaut. Le résultat du lance de dés apparaitra sur la fenêtre d'attaque. Vert pour le lancé gagnant, rouge pour le perdant. 
+						Lors de cette phase, vous allez devoir désigner un territoire attaquant puis sa cible.
+					</p>
+					<p>
+						Cliquez sur n'importe quel territoire vous appartenant. Les territoires "attaquables" apparaissent alors en surbrillance. Choisissez-en un puis cliquez sur sa pastille: une fenêtre d'attaque s'ouvre alors. Dans cette fenêtre, vous pouvez voir les unités qui seront engagées dans le combat (de 1 à 3 pour l'attaque et de 1 à 2 pour la défense).
+					</p>
+					<p>
+						Cliquez sur le bouton "Attaquer" pour lancer l'assaut. Le résultat du lancé de dés apparaitra dans la fenêtre d'attaque. Vert pour le lancé gagnant, rouge pour le perdant.
 					</p>
 
 					<p>
-						<h3>Lors d'un déplaccement'</h3>
+						<h3>Lors d'un déplaccement</h3>
 						Lorsque vous gagnez un nouveau territoire, vous avez la possibilitée de déplacer de 3 à X unités dessus (3 étant le minimum). Pour ce faire, l'encart d'attaque se transforme en encart de déplacement automatiquement apres une victoire.
+					</p>
+					<p>
+						Si vous avez assez d'unités (plus de 3), vous pourrez alors choisir combien d'unitées envoyer sur le nouveau territoire et combien resteront sur le territoire attaquant en jouant avec les boutons "+".
 					</p>
 
 					<p>
 						<h3>Lors de la phase dernier déplaccement</h3>
-						<strong>N'oubliez pas !</strong> Avant de passer la main à vos adversaires, vous avez la possibilitée de réaliser un dernier déplacement. Ce dernier s'opère de n'importe quel terrritoire vous appartenant vers un autre territoire si un lien existe entre eux. Un lien est simplement un chemin de territoires contigue vous appartenant allant de A vers B.
+						<strong>N'oubliez pas !</strong> Avant de passer la main à vos adversaires, vous avez la possibilitée de réaliser un dernier déplacement. Cette étape est falcutative, et vous ne pouvez déplacer des troupes que si le territoire source a au moins 2 unités.
+					</p>
+					<p>
+						Le dernier déplacement s'opère de n'importe quel terrritoire vous appartenant vers un autre territoire <strong>si un lien existe entre eux.</strong> Un lien est simplement un chemin de territoires contigue vous appartenant allant de A vers B.
+					</p>
+					<p>
+						Avant de cliquer sur le bouton rouge "Fin du tour", choisissez 2 territoires et opérez un déplacement comme vous le faites après une conquête de territoire. En validant votre choix, votre tour prend fin et c'est au joueur suivant de jouer.
 					</p>
 
 				</article>
@@ -135,15 +154,20 @@
 				<article id="score">
 					<header>Système de classement</header>
 					<p>
-						<strong>Avertissement: </strong>Le classement est pour le moment en phase d'ébauche. Il n'est pas parfait et sera surement amené à être modifié, alors si vous avez des idées n'hésitez pas ! 
+						Chaque partie de Global Wars n'est pas anodine, car vous jouez vos propres points !
 					</p>
-
 					<p>
-						Chaque partie rapporte des points au gagnants. Donc plus vous jouez, plus vous gagnerez de points. Perdre une partie ne vous fait pas perdre de points. En revanche, si vous abandonnez une partie en cours de jeu (c'est à dire une partie ou vous avez joué au moins un coup), votre score sera amputé de 3 points. Parce que rage quit, c'est pas beau :)<br/>
+						La règle est simple: quand un joueur est éliminé, il donne un point de son propre stock à tous les joueurs encore vivants. Vous pouvez avoir un stock de points négatif, et ce stock est remis à égalité pour tous les joueurs chaque mois.
+					</p>
+					<p>
+						Chaque mois, le joueur ayant cumulé le plus grand nombre de points est désigné "Joueur du mois". A cette occasion, tout les scores sont effacés et chaque joueur recommence le nouveau mois avec un total de 10 points.
+					</p>
+					<p>
 						<strong>Tips: </strong>refuser une partie ne vous fera pas perdre de points. Si vous abandonner sans avoir joué, vous ne perdez rien.
 					</p>
 					<p>
-						Voici le tableau actuel des points attribués lors des parties:
+						Afin d'illustrer le système de répartition de points, prenons un exemple concret. Nous partons du constat que tous les joueurs ont un même total de 0 point au début de la partie.
+
 						<table class="-table _striped_ _hovered_">
 							<thead>
 								<tr>
@@ -157,22 +181,22 @@
 							<tbody>
 								<tr>
 									<td>4 joueurs</td>
-									<td>5</td>
 									<td>3</td>
-									<td>2</td>
-									<td>0</td>
+									<td>1</td>
+									<td>-1</td>
+									<td>-3</td>
 								</tr>
 								<tr>
 									<td>3 joueurs</td>
-									<td>4</td>
 									<td>2</td>
 									<td>0</td>
+									<td>-2</td>
 									<td class="null">&#216;</td>
 								</tr>
 								<tr>
 									<td>2 joueurs</td>
-									<td>3</td>
-									<td>0</td>
+									<td>1</td>
+									<td>-1</td>
 									<td class="null">&#216;</td>
 									<td class="null">&#216;</td>
 								</tr>
@@ -192,24 +216,20 @@
 					</p>
 
 					<p>
-						<h3>Grosse update de la pentecôte</h3>
-						Pendant que vous profitiez du soleil et des températures quasi estivales de ce long week-end, je n'ai pas chomé !<br/>
-						Le plus urgents a été fait: j'ai corrigé quasiment tout les bugs et/ou améliorations que vous m'avez remonté. Merci à tous pour votre collaboration à Global War :)
+						<h3>Encore une mise à jour !</h3>
+						Cette semaine il y a du nouveau du côté de Global War, et du lourd: le système de points et classement à été complètement changé !
 					</p>
 					<p>
-						Dans le détail on retrouvera:
-						<ul>
-							<li>Ajout d'un bouton "Passer" lors du déroulement des coups précédents</li>
-							<li>Ces mêmes déroulement ont été améliorés. Maintenant on ne voit plus chaque renforts se placer, si un joueur pose 30 renforts au même endroit, on voit le territoire prendre les 30 en une fois. Ca change la vie !</li>
-							<li>L'ordre des joueurs est maintenant le même dans l'accueil et dans la partie. C'est l'ordre de jeu</li>
-							<li>Normallement il n'y aura plus de problèmes de déplacement après une attaque</li>
-							<li>Lors de la conquète d'un territoire, c'est l'ensemble des unités qui se déplacent et plus seulement 3 (bien sûr une restante sur le territoire attaquant)</li>
-							<li>Update de la fenêtere de dernier déplacement pour clarifier la situation</li>
-							<li>Les statistiques tiennent maintenant compte de l'ensemble des parties jouées et non pas des 8 dernières</li>
-						</ul>
+						Concrètement, chaque joueur commence le mois avec 10 points. Chacune de vos parties mettront maintenant en jeu vos propres points, alors réfléchissez <strike>mieux</strike> bien :)<br/>
+						Pour plus d'infos, je vous invite à consulter la <a href="#score">notice des scores.</a>
 					</p>
 					<p>
-						Encore une fois merci à tous ! Il reste encore pas mql de bug mais les choses avancent bien. Alors continuez à "tester" le jeu et à me remonter tous les bugs. Bonne chance ;)
+						A noter aussi une petite nouveauté côté options: l'ajout d'un mode "disponibilité". Si vous partez en vacances, si vous avez trop de parties en cours ou si tout simplement vous ne voulez pas être invité dans de nouvelles parties, vous pouvez maintenant changer votre disponibilité. Ca se passe en haut a droite de votre écran, à côté de votre photo (qui au passage je le rappelle est modifiable).<br/>
+						N'oubliez pas d'activer cette option quand vous serez de nouveau prêt à en découdre, sinon les autres joueurs ne vous verront pas !
+					</p>
+					
+					<p>
+						Je reste toujours à l'écoute de vos bonnes idées et suggestions pour améliorer le jeu, alors comme d'habitude n'hésitez pas à m'embêter ;)
 					</p>
 
 

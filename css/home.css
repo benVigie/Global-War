@@ -9,6 +9,15 @@
 }
 
 @font-face {
+	font-family: 'MenuFont';
+	src: url('../fonts/fontMenu/fontawesome.eot');
+	src: url('../fonts/fontMenu/fontawesome.woff') format('woff'),
+			url('../fonts/fontMenu/fontawesome.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
 	font-family: "CPMono";
 	src: url('../fonts/CPMono_v07_Plain.otf') format("opentype");
 	font-style: normal;
@@ -72,9 +81,11 @@ h1 {
 	border-radius: 5px;
 	height: 70px;
 }
-.user-notif { cursor: pointer; }
-.user-notif[data-notif='1']:after { content: ' oui'; }
-.user-notif[data-notif='0']:after { content: ' non'; }
+.user-notif, .user-availability { cursor: pointer; }
+.user-notif > i, .user-availability > i { font-family: 'MenuFont'; font-size: 1.2em; font-style: normal; opacity: 0.8; }
+.user-notif[data-notif='1'] > i:after, .user-availability[data-availability='1'] > i:after { content: ''; color: mediumseagreen; }
+.user-notif[data-notif='0'] > i:after, .user-availability[data-availability='0'] > i:after { content: ''; color: tomato; }
+
 
 .user-fade-effect {
 	opacity: 0.4;

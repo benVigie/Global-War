@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le : Mer 01 Mai 2013 à 20:08
+-- Généré le : Dim 16 Juin 2013 à 18:58
 -- Version du serveur: 5.5.20
 -- Version de PHP: 5.3.10
 
@@ -71,6 +71,18 @@ CREATE TABLE IF NOT EXISTS `games` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `game_periods`
+--
+
+CREATE TABLE IF NOT EXISTS `game_periods` (
+  `gp_start_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `gp_player_of_the_previous_period` int(11) NOT NULL,
+  PRIMARY KEY (`gp_start_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `players`
 --
 
@@ -80,7 +92,9 @@ CREATE TABLE IF NOT EXISTS `players` (
   `player_pass` varchar(64) NOT NULL,
   `player_mail` varchar(64) NOT NULL,
   `player_score` int(11) NOT NULL,
+  `player_global_score` int(11) NOT NULL,
   `player_notification` tinyint(4) NOT NULL,
+  `player_available` tinyint(4) NOT NULL,
   `player_inscription` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`player_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;

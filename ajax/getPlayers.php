@@ -11,7 +11,7 @@
 		AjaxExit('Problemes de connexion BDD');
 
 	// Faire cette putain de requete
-	$playersList = $db->GetRows("SELECT * FROM `players` WHERE `players`.`player_id` != '$player'");
+	$playersList = $db->GetRows("SELECT * FROM `players` WHERE `players`.`player_id` != '$player' AND `players`.`player_available` = '1'");
 	if (is_null($playersList))
 		AjaxExit('Impossible de recuperer les autres joueurs');
 

@@ -54,8 +54,9 @@
 				<div>
 					<strong class="user-nick">{$User_nick}</strong>
 					<span class="user-email user-fade-effect" onBlur="updateEmail();" contenteditable>{$User_email}</span>
-					<a onClick="toggleNotif();" class="user-notif user-fade-effect" data-notif="{$User_notif}">Notifications: </a> -
-					<a href="home.php?logout" class="user-fade-effect user-change-color">Déconnection</a>
+					<a onClick="toggleAvailability();" class="user-availability user-fade-effect" data-availability="{$User_availability}">Disponible: <i></i></a>&nbsp;&nbsp;-&nbsp;&nbsp; 
+					<a onClick="toggleNotif();" class="user-notif user-fade-effect" data-notif="{$User_notif}">Notifications: <i></i></a>&nbsp;&nbsp;-&nbsp;&nbsp; 
+					<a href="home.php?logout" class="user-fade-effect user-change-color">Déconnexion</a>
 				</div>
 				<img class="user-picture" src="{$User_pic}" onclick="$('.js-modal-change-picture').data('kit-modal').open();" alt="profil picture" />
 			</aside>

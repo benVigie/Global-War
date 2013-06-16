@@ -41,7 +41,13 @@ function validUpdate(data) {
 			displayMessage('Notification activées sur ' + email, 'Préférence notification');
 		document.querySelector('.user-notif').setAttribute('data-notif', data.value);
 	}
-
+	if (data.modif === 'availability') {
+		if (data.value === '0')
+			displayMessage('Les autres joueurs ne peuvent plus vous inviter dans de nouvelles parties.', 'Joueur indisponible', 'warning');
+		else
+			displayMessage('Les autres joueurs vous voient et peuvent vous inviter pour de nouvelles parties !', 'Joueur disponible');
+		document.querySelector('.user-availability').setAttribute('data-availability', data.value);
+	}
 	else if (data.modif === 'email')
 		displayMessage('Vos notifications seront maintenant envoyées sur ' + data.value, "C'est noté !");
 }
@@ -51,6 +57,17 @@ function toggleNotif() {
 
 	$.ajax({
 		url: 'ajax/updateProfil.php?notification=' + ((notif.getAttribute('data-notif') === '0') ? '1' : '0'),
+		dataType: 'json',
+		success: validUpdate,
+		error: notifyError
+	});
+}
+
+function toggleAvailability() {
+	var notif = document.querySelector('.user-availability');
+
+	$.ajax({
+		url: 'ajax/updateProfil.php?availability=' + ((notif.getAttribute('data-availability') === '0') ? '1' : '0'),
 		dataType: 'json',
 		success: validUpdate,
 		error: notifyError
