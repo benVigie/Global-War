@@ -13,10 +13,7 @@
 class myMail
 {
 	private $adminMail	= 'vigie.benjamin@outlook.com';
-	private	$from 		= 'vigie.benjamin@outlook.com';
-	// private	$fai 		= 'smtp.sfr.fr';
-	// private	$fai 		= null;
-	private	$fai 		= 'websense.fr.nds.com';
+	private	$from 		= 'noreply@GlobalWar.com';
 	
 	/**
 	*	Constructeur. Initialise la classe d'envoie de mail.
@@ -64,11 +61,6 @@ class myMail
 		if (is_null($to))
 			$to = $this->adminMail;
 	
-		if (!empty($this->fai))
-		{
-			ini_set ('SMTP', ($this->fai));
-			// ini_set ('sendmail_from', "$this->adminMail");
-		}
 		return (mail($to, $title, $message, $headers));
 	}
 }

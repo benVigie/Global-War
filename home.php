@@ -7,8 +7,10 @@
 
 
 	// Si l'utilisateur est pas logue, on le redirige en page d'accueil (login)
-	if (!isset($_SESSION['user-id']))
-		header('Location: index.php');
+	if (!isset($_SESSION['user-id'])) {
+		// header('Location: index.php');
+		Display('login.tpl', 'Connection');
+	}
 
 	// Ouverture de la BDD
 	$db = new myBDD();
@@ -17,24 +19,25 @@
 		Display('home.tpl', 'Home');
 	}
 
+	// On recupere l'instance du joueur
+	$currentUser = new User($db, $_SESSION['user-id']);
+
+	// Dans le cas ou il demande de se deconnecter
+	if (isset($_GET['logout'])) {
+		$currentUser->LogoutUser();
+		$db->close();
+		// header('Location: index.php');
+		Display('login.tpl', 'Connection');
+	}
+
 	// Si un changement de photo est requis...
 	if (isset($_FILES['newPic'])) {
 		CreateVignette($_FILES['newPic'], ('images/users/' . $_SESSION['user-id'] . '.jpg'), 75, 75);
 		header('Location: home.php');
 	}
 
-	// On recupere l'instance du joueur
-	$currentUser = new User($db, $_SESSION['user-id']);
-
 	// On instancie notre classe de stats
 	$stats = new Statistics($db, $_SESSION['user-id']);
-
-	// Dans le cas ou il demande de se deconnecter
-	if (isset($_GET['logout'])) {
-		$currentUser->LogoutUser();
-		$db->close();
-		header('Location: index.php');
-	}
 
 	// Recuperation de la liste des parties
 	$games = $currentUser->GetCurrentGames();

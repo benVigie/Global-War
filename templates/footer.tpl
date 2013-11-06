@@ -58,10 +58,9 @@
 
 				// Envoie du rapport
 				$.ajax({
-					url: 'mail.php',
-					type: "POST",
+					url: 'ajax/bugReport.php',
+					type: 'POST',
 					data: {
-						type: 'bugReport',
 						cause: $('#bug-type option:selected').text(),
 						importance: $('#bug-level option:selected').text(),
 						rapporteur: document.querySelector('.user-nick').innerHTML,

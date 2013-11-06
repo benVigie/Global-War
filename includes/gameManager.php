@@ -1,5 +1,7 @@
 <?php
 
+	require_once ('mail.php');
+
 	/**
 	* 	GameManager fait tourner le jeu. Il s'occupe de la création, du déroulement et de tout ce qui touche aux mécaniques de jeu.
 	* 	C'est le coeur du projet !
@@ -1116,22 +1118,35 @@
 			if (is_null($pref[0]) || $pref[0]['player_notification'] == '0')
 				return;
 
+			$mailer = new GWMailer();
+
 			// Ajout du mail du destinataire
 			$infos['to'] = $pref[0]['player_mail'];
+
+			// Selon le type d'envoie, on construit un mail different
+			switch ($infos['type']) {
+				case 'bugReport':
+					if (!$mailer->sendBugReport($infos))
+						echo "Envoie de rapport de bug echoue";
+					break;
+				case 'newGame':
+					if (!$mailer->sendNewGame($infos))
+						echo "Envoie de mail de nouvelle partie echoue";
+					break;
+				case 'yourTurn':
+					if (!$mailer->sendNewTurn($infos))
+						echo "Envoie de mail de nouveau tour echoue";
+					break;
+				case 'endGame':
+					if (!$mailer->sendEndGame($infos))
+						echo "Envoie du mail de fin de partie echoue";
+					break;
+
+				default:
+					echo "Type de mail mon reconnu.";
+					break;
+			}
 			
-			// Envoie du mail - Pour le moment redirection htmlengine
-			$post = http_build_query($infos);
-			$context_options = array (
-					'http' => array (
-						'method' => 'POST',
-						'header'=> "Content-type: application/x-www-form-urlencoded\r\n"
-							. "Content-Length: " . strlen($post) . "\r\n",
-						'content' => $post
-						)
-					);
-			
-			$context = stream_context_create($context_options);
-			$fp = fopen('http://172.21.253.41/htmlengine/old/ben/mailing/mail.php', 'r', false, $context);
 		}
 
 	}
