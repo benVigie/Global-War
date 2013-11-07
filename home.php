@@ -8,8 +8,7 @@
 
 	// Si l'utilisateur est pas logue, on le redirige en page d'accueil (login)
 	if (!isset($_SESSION['user-id'])) {
-		// header('Location: index.php');
-		Display('login.tpl', 'Connection');
+		header('Location: index.php');
 	}
 
 	// Ouverture de la BDD
@@ -26,8 +25,7 @@
 	if (isset($_GET['logout'])) {
 		$currentUser->LogoutUser();
 		$db->close();
-		// header('Location: index.php');
-		Display('login.tpl', 'Connection');
+		header('Location: index.php');
 	}
 
 	// Si un changement de photo est requis...

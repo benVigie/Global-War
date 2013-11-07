@@ -194,10 +194,11 @@
 		}
 
 		/**
-		*	Recupere tous les coups joues apres le dernier tour du joueur
+		*	Recupere tous les coups joues.
+		*	Si le joueur a déjà joué, on récupère tout les nouveau coups joués après son dernier tour.
 		* 
 		*	@param 	Int $player l'ID du joueur 
-		*	@return Array Un tableaux des differents coups dans l'ordre chronologique
+		*	@return Array Un tableaux des differents coups dans l'ordre chronologique ou null si le joueur n'a fait aucun coup
 		*/
 		public function 	GetLastAction($player) {
 			// Requete 1:  Recuperation de l'heure du dernier coup du joueur
@@ -250,6 +251,22 @@
 			$renfNumber += $this->getBonusContinent($positions);
 
 			return ($renfNumber);
+		}
+
+		/**
+		*	Vérifie si c'est le premier tour du joueur dans la partie
+		*
+		*	@param: {Int} $player Id du joueur a checker
+		*	@return: {Bool} True si le joueur n'a jamais joué de coups
+		*/
+		public function 	IsPlayerFirstTurn($player) {			
+			$stroke = $this->_db->GetRows("SELECT `strokes`.`stroke_date` FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' AND `strokes`.`stroke_player` = '$player' ORDER BY `strokes`.`stroke_date` LIMIT 0, 1");
+			
+			// Si aucun coup joué par ce joueur, c'est que c'est son premier tour
+			if (is_null($stroke))
+				return (true);
+
+			return (false);
 		}
 
 		/**
