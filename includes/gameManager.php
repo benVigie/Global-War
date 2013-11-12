@@ -108,16 +108,18 @@
 			$this->setRenforcementNumber($firstOne);
 
 			// 7 - On envoie un mail aux joueurs concernes
+			$mailPlayerList = $this->GetPlayers();
 			foreach ($players as $p) {
 				if ($p != $_SESSION['user-id']) {
 					$this->sendPlayerNotification($p, array('type' => 'newGame',
-															'creator' => $_SESSION['user-nick'], 
+															'creator' => $_SESSION['user-nick'],
+															'player' => $p,
+															'playerList' => $mailPlayerList,
 															'gameID' => $game_id,
 															'youStart' => (($p == $firstOne) ? true : false)));
 				}
 			}
-			// TODO:	- checker si le joueur 1 est le joueur courant. Dans ce cas pas de mail
-			// 			- else: envoyer un mail
+			
 			return ($game_id);
 		}
 
@@ -172,7 +174,7 @@
 				$res[$i]['nick'] = $players[$i]['player_nick'];
 				$res[$i]['status'] = ($players[$i]['pig_player_status'] === 'alive') ? 1 : 0;
 				$res[$i]['color'] = $players[$i]['pig_color'];
-				if (file_exists('../images/users/' . $res[$i]['id'] . '.jpg'))
+				if ((file_exists('../images/users/' . $res[$i]['id'] . '.jpg')) || (file_exists('./images/users/' . $res[$i]['id'] . '.jpg')))
 					$res[$i]['pic'] = 'images/users/' . $res[$i]['id'] . '.jpg';
 				else
 					$res[$i]['pic'] = 'images/users/noset.jpg';
@@ -640,7 +642,9 @@
 
 			// On envoye un email au nouveau joueur concerne
 			$this->sendPlayerNotification($nextPlayer, array('type' => 'yourTurn',
-																'gameID' => $this->_gameID));
+															 'player' => $nextPlayer,
+															 'playerList' => $this->GetPlayers(),
+															 'gameID' => $this->_gameID));
 
 			return ($this->_db->Execute("UPDATE `games` SET `game_current_player` = '$nextPlayer' WHERE `games`.`game_id` = '$this->_gameID'"));
 		}
@@ -991,8 +995,10 @@
 			// Update du score
 			if ($abandon === false) {
 				// Si le joueur courant est le gagnant, pas besoin d'updater son score
-				if ($status !== 'winner')
-					$points = $this->updateScore($player, $this->isThisGameInCurrentPeriod());
+				if ($status !== 'winner') 
+					$this->updateScore($player, $this->isThisGameInCurrentPeriod());
+				
+				$points = (intval($nb[0]['Total']) - intval($nb[0]['NB'])) - (intval($nb[0]['NB']) - 1);
 			}
 			else if ($malus != 0) {
 				if (!$this->_db->Execute("UPDATE `players` SET `player_score` = `player_score` + $malus WHERE `players`.`player_id` = '$player'"))
@@ -1003,7 +1009,10 @@
 			// Envoie du mail
 			if (!$abandon)
 				$this->sendPlayerNotification($player, array('type' => 'endGame',
-																'position' => $status,
+															 	'position' => $status,
+															 	'player' => $player,
+															 	'playerList' => $this->GetPlayers(),
+															 	'bigLooser' => (($nb[0]['NB'] == $nb[0]['Total']) ? true : false),
 																'points' => $points));
 		}
 
@@ -1013,7 +1022,7 @@
 		*
 		*	@param {Int} $player 				L'id du joueur
 		*	@param {Boolean} $isCurrentPeriod 	True si la partie compte pour la période courante
-		*	@return {Int} 	Score enlevé au joueur
+		*	@return 
 		*/
 		private function updateScore($player, $isCurrentPeriod) {
 			$alivePlayers;
@@ -1028,6 +1037,7 @@
 
 			// Update du score global du joueur
 			$query = "UPDATE `players` SET `player_global_score` = `player_global_score` - $pointsLoose";
+			
 			// Si la partie compte pour la période courante, update du score courant du joueur
 			if ($isCurrentPeriod)
 				$query .= ", `player_score` = `player_score` - $pointsLoose";
@@ -1051,7 +1061,6 @@
 				$this->_db->Execute($query);
 			}
 
-			return ($pointsLoose);
 		}
 
 		/**
@@ -1167,4 +1176,4 @@
 		}
 
 	}
- ?> 
+?>

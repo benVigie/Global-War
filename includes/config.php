@@ -10,7 +10,6 @@
 	//error_reporting(0);
 	// $smt->debugging = true;
 	
-	
 	################### FONCTIONS A PORTEE GLOBALE ##########################
 	/*
 	*	Cette fonction s'occupe de l'affichage general des templates.

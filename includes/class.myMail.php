@@ -12,7 +12,7 @@
 */
 class myMail
 {
-	private $adminMail	= 'vigie.benjamin@outlook.com';
+	private $adminMail	= 'youremail@GlobalWar.com';
 	private	$from 		= 'noreply@GlobalWar.com';
 	
 	/**
@@ -48,21 +48,42 @@ class myMail
 	*	@param {String} $to Adresse email du destinataire
 	*	@param {String} $title Titre du mail
 	*	@param {String} $body Corp du mail (format HTML)
-	*	@return {Boolean} True si le mai a bien ete envoye, false sinon
+	*	@return {Boolean} True si le mail a bien ete envoye, false sinon
 	*/
 	public function Send($to, $title, $body)
 	{	
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
-		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 		$headers .= "From: Global War <$this->from>" . "\r\n";
 		
 		$message = '<html><head><title>' . $title . '</title></head><body>' . $body . '</body></html>';
 		
 		if (is_null($to))
 			$to = $this->adminMail;
-	
+
 		return (mail($to, $title, $message, $headers));
 	}
+
+	/**
+	*	Envoie un email :)
+	*
+	*	@param {String} $to Adresse email du destinataire
+	*	@param {String} $title Titre du mail
+	*	@param {String} $body Corp du mail (format HTML)
+	*	@return {Boolean} True si le mail a bien ete envoye, false sinon
+	*/
+	public function SendHTML($to, $title, $email)
+	{
+		$headers  = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset="utf-8"' . "\r\n";
+		$headers .= "From: Global War <$this->from>" . "\r\n";
+		
+		if (is_null($to))
+			$to = $this->adminMail;
+
+		return (mail($to, $title, $email, $headers));
+	}
+
 }
   
 ?>
