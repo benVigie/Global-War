@@ -678,59 +678,58 @@
 		}
 
 		/**
-		*	Appele lorsqu'un joueur abandonne une partie.
+		*	When a player give up, 
 		*
-		*	@param {Int} ID du joueur qui abandonne
-		*	@return {Boolean} True si le joueur a quitte gratuitement, False s'il y a laisse des plumes
+		*	@param {Int} 		playerID 	Player ID in DB
+		*	@return {Boolean} 	True if the player doesn't loose points, else false
 		*/
 		public function 	PlayerStopDemand($playerID) {
 			$hasPlayed;
 			$otherPlayer;
 
-			// Checker si le joueur a joué ou non dans cette partie
+			// Checker if the player has already play a turn in this game
 			$nbPlayerStrokes = $this->_db->GetRows("SELECT COUNT(`strokes`.`stroke_id`) AS `Strokes` FROM `strokes` WHERE `strokes`.`stroke_game` = '$this->_gameID' AND `strokes`.`stroke_player` = '$playerID'");
 			$hasPlayed = ($nbPlayerStrokes[0]['Strokes'] == '0') ? false : true;
 
-			// Recupere le nombre de joueur en lice
+			// Get number of alive players in the game
 			$nbPlayersLeft = count($this->GetPlayers(true)) - 1;
 
-			// Si le lacheur c'est son tour de jouer, il faut donner la main (enfin, que si il reste au moins 2 joueurs en lice...)
+			// If there is at least 2 players, check if we have to change current player
 			if ($nbPlayersLeft > 1)
 				$this->EndTurn($playerID);
 
-			// Si le joueur qui abandonne n'a jamais joue de coup (== refuser une partie)
+			// Case 1: the player never play this game. He can quit without loose points
 			if ($hasPlayed === false) {
-				// Clore le jeu pour le joueur SANS perte de points
+				// Remove player and update game properties
 				$this->playerDontWantToPlayThisGame($playerID);
 
-				// Si il ne reste qu'une personne, on clos le jeu sans gagnant proprement
+				// If there is no more player, quit the game
 				if ($nbPlayersLeft <= 1) {
-					// Recuperer l'id de l'autre joueur et le virer du jeu
+					// First retreive last player ID
 					$otherPlayer = $this->GetPlayers(true);
 					$otherPlayer = ($otherPlayer[0]['id'] == $playerID) ? $otherPlayer[1]['id'] : $otherPlayer[0]['id'];
 
+					// ... Then close the game for this player
 					$this->playerDontWantToPlayThisGame($otherPlayer);
 
-					// Adios le jeu
+					// Don't forget to close the game !
 					$this->endThisGameInDB();
 				}
 
 				return (true);
 			}
-			// Si ce coquin abandonne lachement la partie
+			// Case 2: the player give up during a game. He will loose points...
 			else {
 				// Desole mec, tu perd des points !
 				$this->playerStopGame($playerID);
 
-				// Si il ne reste qu'une personne, on clos le jeu en designant le dernier adversaire gagnant
+				// If there remain only one player
 				if ($nbPlayersLeft <= 1) {
-					// Recuperer l'id de l'autre joueur et le virer du jeu
+					// Retreive his ID and close the game
 					$otherPlayer = $this->GetPlayers(true);
 					$otherPlayer = ($otherPlayer[0]['id'] == $playerID) ? $otherPlayer[1]['id'] : $otherPlayer[0]['id'];
 					
 					$this->closeGameForPlayer($otherPlayer);
-
-					// Adios le jeu
 					$this->endThisGameInDB();
 				}
 			}
@@ -947,6 +946,9 @@
 					// Cloture le joueur courant en le marquant comme gagnant
 					$this->closeGameForPlayer($_SESSION['user-id']);
 
+					// Set points
+					$this->updateScore();
+
 					// Merci-au-revoir
 					$this->endThisGameInDB();
 
@@ -958,21 +960,21 @@
 		}
 
 		/**
-		*	Termine un joueur proprement en BDD. Attribue le score.
+		*	When a player loose, this function remove him from the game. Points are not yet given (except for give up players)
 		*
-		*	@param {Int} $player L'id du joueur
-		*	@param {Boolean} $abandon true si le joueur a abandonne
-		*	@param {Int} $malus points perdu par le joueur qui abandonne
+		*	@param {Int} 		$player 				Player ID
+		*	@param {Boolean} 	$giveUp 				True if player give up. Default false, means player simply loose
+		*	@param {Int} 		$pointsLooseByGiveUp 	Points loose by give-up player 
 		*/
-		private function closeGameForPlayer($player, $abandon = false, $malus = 0) {
+		private function closeGameForPlayer($player, $giveUp = false, $pointsLooseByGiveUp = 0) {
 			$nb;
 			$status;
 			$points = 0;
 
-			// Recupere le nombre de joueurs EN VIE
+			// Get all players still alive and the number of players in this game
 			$nb = $this->_db->GetRows("SELECT COUNT(`players_in_games`.`pig_player`) AS `NB`, `games`.`game_nb_players` AS `Total` FROM `players_in_games` JOIN `games` ON `games`.`game_id` = `players_in_games`.`pig_game` WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player_status` = 'alive' ORDER BY `players_in_games`.`pig_player_status` = 'alive'");
 
-			// Classement du joueur et calcul des points
+			// Set ranking
 			switch ($nb[0]['NB']) {
 				case '4':
 					$status = 'four';
@@ -988,77 +990,87 @@
 					break;
 			}
 
-			// Attribution de la place
-			if (!$this->_db->Execute("UPDATE `players_in_games` SET `pig_player_status` = '$status' WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'"))
-				echo "caca tout mou";
+			// Update ranking in DB
+			if (!$giveUp) {
+				if (!$this->_db->Execute("UPDATE `players_in_games` SET `pig_player_status` = '$status' WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'"))
+					echo "Cannot update looser status";
+			}
+			// Else if player give up, update his status and his score
+			else {
+				if (!$this->_db->Execute("UPDATE `players_in_games` SET `pig_player_status` = 'giveup' WHERE `players_in_games`.`pig_game` = '$this->_gameID' AND `players_in_games`.`pig_player` = '$player'"))
+					echo "Cannot update looser give up status";
+				if (!$this->_db->Execute("UPDATE `players` SET `player_score` = `player_score` + $pointsLooseByGiveUp, `player_global_score` = `player_global_score` + $pointsLooseByGiveUp WHERE `players`.`player_id` = '$player'"))
+					echo "Cannot update looser give up points";
+			}
 
-			// Update du score
-			if ($abandon === false) {
-				// Si le joueur courant est le gagnant, pas besoin d'updater son score
-				if ($status !== 'winner') 
-					$this->updateScore($player, $this->isThisGameInCurrentPeriod());
-				
+			// Send a mail to the looser
+			if (!$giveUp)
 				$points = (intval($nb[0]['Total']) - intval($nb[0]['NB'])) - (intval($nb[0]['NB']) - 1);
-			}
-			else if ($malus != 0) {
-				if (!$this->_db->Execute("UPDATE `players` SET `player_score` = `player_score` + $malus WHERE `players`.`player_id` = '$player'"))
-					echo "caca tout mou x3";
-				$points = $malus;
-			}
-
-			// Envoie du mail
-			if (!$abandon)
 				$this->sendPlayerNotification($player, array('type' => 'endGame',
 															 	'position' => $status,
 															 	'player' => $player,
+															 	'killer' => $_SESSION['user-nick'],
 															 	'playerList' => $this->GetPlayers(),
 															 	'bigLooser' => (($nb[0]['NB'] == $nb[0]['Total']) ? true : false),
 																'points' => $points));
 		}
 
 		/**
-		*	Met le score des joueurs à jour quand une partie se termine.
-		*	Dans les faits, on va enlever autant de points qu'il reste de joueurs à $player et redistribuer ces points aux joueurs encore en lice.
-		*
-		*	@param {Int} $player 				L'id du joueur
-		*	@param {Boolean} $isCurrentPeriod 	True si la partie compte pour la période courante
+		*	When a game is over, update score of all players in the same time
+		*	
+		*	@param 
 		*	@return 
 		*/
-		private function updateScore($player, $isCurrentPeriod) {
-			$alivePlayers;
-			$pointsLoose = 0;
-			$p_id;
-			$query;
+		private function updateScore() {
+			$points = 0;
+			$totalPlayers = 0;
+			$isCurrentPeriod = $this->isThisGameInCurrentPeriod();
 
-			// Première étape, on récupère les joueurs encore en jeu
-			$alivePlayers = $this->GetPlayers(true);
-			// Le perdant redistribue un de ses points à chaque joueur encore en jeu
-			$pointsLoose = count($alivePlayers);
+			// Retreive players ranking
+			$podium = $this->_db->GetRows("SELECT `players_in_games`.`pig_player` AS `ID`, `players_in_games`.`pig_player_status` AS `POS` FROM `players_in_games` WHERE `players_in_games`.`pig_game` = '$this->_gameID'");
+			$totalPlayers = count($podium);
 
-			// Update du score global du joueur
-			$query = "UPDATE `players` SET `player_global_score` = `player_global_score` - $pointsLoose";
-			
-			// Si la partie compte pour la période courante, update du score courant du joueur
-			if ($isCurrentPeriod)
-				$query .= ", `player_score` = `player_score` - $pointsLoose";
-			$query .= " WHERE `players`.`player_id` = '$player'";
-			
-			// Update in DB
-			$this->_db->Execute($query);
+			foreach ($podium as $p) {
+				$pos = 0;
 
-			// Maintenant que les points ont été enlevés au perdant, on les redistribue aux personnes encore en jeu
-			foreach ($alivePlayers as $p) {
-				$p_id = $p['id'];
+				// Calcul points
+				switch ($p['POS']) {
+					case 'winner':
+						$pos = 1;
+						break;
+					case 'two':
+						$pos = 2;
+						break;
+					case 'three':
+						$pos = 3;
+						break;
+					case 'four':
+						$pos = 4;
+						break;
+					
+					default:
+						$pos = 0;
+						break;
+				}
 
-				// On ajoute un point au score global du joueur
-				$query = "UPDATE `players` SET `player_global_score` = `player_global_score` + 1";
-				// Si la partie compte pour la période courante, on donne également un point au score courant du joueur
-				if ($isCurrentPeriod)
-					$query .= ", `player_score` = `player_score` + 1";
-				$query .= " WHERE `players`.`player_id` = '$p_id'";
-				
-				// Update in DB
-				$this->_db->Execute($query);
+				// If the current player doesn't give up, update score 
+				if ($pos > 0) {
+
+					// Compute points
+					$points = ($totalPlayers - $pos) - ($pos - 1);
+
+					// Update player score in DB
+					$query = "UPDATE `players` SET `player_global_score` = `player_global_score` + $points";
+					
+					// Si la partie compte pour la période courante, update du score courant du joueur
+					if ($isCurrentPeriod)
+						$query .= ", `player_score` = `player_score` + $points";
+					$query .= " WHERE `players`.`player_id` = '" . $p['ID'] . "'";
+					
+					// Update in DB
+					$this->_db->Execute($query);
+				}
+
 			}
 
 		}
@@ -1103,12 +1115,14 @@
 			// Passer tous les territoires du joueur en neutre
 			$this->_db->Execute("UPDATE `boards` SET `boards`.`board_player`= '0' WHERE `boards`.`board_game` = '$this->_gameID' AND `boards`.`board_player` = '$player'");
 
-			// Le virer avec son malus
+			// TODO: get number of "give up points" in conf file
+
+			// Close game for this player
 			$this->closeGameForPlayer($player, true, -3);
 		}
 
 		/**
-		*	Retourne un booleen pour savoir si la partie compte pour la période courante
+		*	Return true if the game was created during the current period. Usefull to know if we have to update only the global score or not.
 		*
 		*	@param
 		*	@return {Boolean} True si la partie compte pour la periode courante, sinon False

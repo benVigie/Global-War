@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le : Dim 16 Juin 2013 à 18:58
+-- Généré le : Dim 17 Novembre 2013 à 13:19
 -- Version du serveur: 5.5.20
 -- Version de PHP: 5.3.10
 
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `players` (
 CREATE TABLE IF NOT EXISTS `players_in_games` (
   `pig_game` int(11) NOT NULL,
   `pig_player` int(11) NOT NULL,
-  `pig_player_status` enum('alive','winner','two','three','four') NOT NULL,
+  `pig_player_status` enum('alive','winner','two','three','four','giveup') NOT NULL,
   `pig_order` int(11) NOT NULL,
   `pig_renf_max` int(11) NOT NULL,
   `pig_renf_number` int(11) NOT NULL,

@@ -92,6 +92,7 @@
 			$position = $infosArray['position'];
 			$points = $infosArray['points'];
 			$player = $infosArray['player'];
+			$killer = $infosArray['killer'];
 			$bigLoose = $infosArray['bigLooser'];
 			$playerList = $infosArray['playerList'];
 			$title = '';
@@ -108,6 +109,7 @@
 			else {
 				$title = 'Mauvaise nouvelle Commandant';
 				$texts[] = "La partie est finie. Toutes vos troupes sont soit mortes soit... Vaut mieux pas chercher à savoir.";
+				$texts[] = "Des rumeurs du front disent que c'est $killer qui vous aurait porté le coup de grâce.";
 				$texts[] = $this->priv_endGameQuote($bigLoose, $position);
 
 				switch ($position) {
@@ -120,10 +122,10 @@
 							$texts[] = "Cette seconde place vous coûte un point.";
 						break;
 					case 'three':
-							$texts[] = "Cette troisième place vous coûte $points points.";
+							$texts[] = "Cette troisième place vous coûtera $points points dès que la partie sera terminée.";
 						break;
 					case 'four':
-							$texts[] = "Cette dernière place vous coûte $points points.";
+							$texts[] = "Cette dernière place vous coûtera $points points dès que la partie sera terminée.";
 						break;	
 				}
 			}

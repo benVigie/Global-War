@@ -96,8 +96,10 @@
 				return (null);
 
 			// Calcul du classement du joueur pour chaque partie
-			foreach ($rank as $r)
-				$stats[$r['pig_player_status']]++;
+			foreach ($rank as $r) {
+				if ($r['pig_player_status'] != 'giveup')
+					$stats[$r['pig_player_status']]++;
+			}
 
 			if ($stats['winner'] > 0) {
 				$st .= '{value: ' . $stats['winner'] . ',color:"#4d84a0"}';
