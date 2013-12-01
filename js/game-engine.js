@@ -663,7 +663,7 @@ function	GameEngine(gameID, playerID, map) {
 			dDices = document.querySelectorAll('.defenseDice'),
 			place;
 
-		console.log(datas);
+		// console.log(datas);
 
 		if (datas.error) {
 			displayMessage(datas.error, 'Ouuups !', 'error');
@@ -706,6 +706,9 @@ function	GameEngine(gameID, playerID, map) {
 			document.querySelector('#gameState').innerHTML = "Félicitation, vous remportez la partie !";
 			document.querySelector('#gameState').classList.add('victoryState');
 			document.querySelector('#actionDiv').classList.remove('show');
+
+			// redirection home apres 2s
+			window.setTimeout(function() { window.location.href = 'home.php'; }, 2000);
 		}
 		else if (datas.AttackHasWin === true) {
 			window.setTimeout(function () {

@@ -163,3 +163,72 @@ function onValidStopGame(gameID) {
 		error: notifyError
 	});
 }
+
+function 	loadPlayerStatistics(playerID, nick) {
+	$.ajax({
+		url: 'ajax/getPlayersStatistics.php?player=' + playerID,
+		dataType: 'json',
+		success: onPlayerStatisicsReceived,
+		error: notifyError
+	});
+
+	// Update title
+	document.querySelector('#stats-title').innerHTML = 'Statistiques de ' + nick;
+}
+
+function 	onPlayerStatisicsReceived(data) {
+	console.log(data);
+
+	var slider = $('#owl-stat-slider'),
+		owl = $('#owl-stat-slider').data('owlCarousel'),
+		nbElems,
+		chartData;
+	
+	// Remove items in caroussel
+	nbElems = owl.owl.owlItems.length;
+	for (var i = 0; i < nbElems; i++) {
+		owl.removeItem();
+	};
+	
+	// Populate a new one
+	if (data.RankingPie && data.RankingPie.values != '') {
+		owl.addItem('<article class="stat-container stat-container-pie"><header>Classement</header><figure class="stat-entity"><canvas id="canvas-ranking-pie" height="175" width="175"></canvas><figcaption>' + data.RankingPie.legend + '</figcaption></figure></article>');
+	}
+	if (data.RankingEvolution) {
+		owl.addItem('<article class="stat-container stat-container-line"><header>Ratio de victoires</header><figure class="stat-entity"><canvas id="canvas-ranking-evol" height="200" width="465"></canvas></figure></article>');
+	}
+	if (data.ColorPie) {
+		owl.addItem('<article class="stat-container stat-container-pie"><header>Couleur favorite</header><figure class="stat-entity"><canvas id="canvas-color-pie" height="175" width="175"></canvas></figure></article>');
+	}
+
+	// Refresh afetr 200ms to avoid non ready dom manipulation
+	window.setTimeout(function () {
+		if (data.RankingPie && data.RankingPie.values != '') {
+			chartData = JSON.parse(data.RankingPie.values);
+			new Chart(document.getElementById("canvas-ranking-pie").getContext("2d")).Pie(chartData);
+		}
+		if (data.RankingEvolution) {
+			var lineChartData = {
+					labels : JSON.parse(data.RankingEvolution.label),
+					datasets : [
+						{
+							fillColor : "rgba(151,187,205,0.5)",
+							strokeColor : "rgba(151,187,205,1)",
+							pointColor : "rgba(151,187,205,1)",
+							pointStrokeColor : "#fff",
+							data : JSON.parse(data.RankingEvolution.values)
+						}
+					]
+				};
+
+			new Chart(document.getElementById("canvas-ranking-evol").getContext("2d")).Line(lineChartData);
+		}
+		if (data.ColorPie) {
+			debugger
+			chartData = JSON.parse(data.ColorPie);
+			new Chart(document.getElementById("canvas-color-pie").getContext("2d")).Pie(chartData);
+		}
+
+	}, 200);
+	
+}

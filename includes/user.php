@@ -181,7 +181,7 @@
 		*	@return: {String} Le chemin RELATIF vers la photo de l'utilisateur
 		*/
 		public static function 	GetUserPicture($userID) {
-			if (file_exists('images/users/' . $userID . '.jpg'))
+			if (file_exists('images/users/' . $userID . '.jpg') || file_exists('../images/users/' . $userID . '.jpg'))
 				return ('images/users/' . $userID . '.jpg');
 			else
 				return ('images/users/noset.jpg');

@@ -30,101 +30,145 @@
 
 			<aside id="rank-and-stat">
 				<!-- Classement -->
-				<section id="rank">
-					<h1>Classement</h1>
+				<section>
+					<div id="owl-rank-slider" class="owl-carousel">
+						<div>
+							<h1>Podium</h1>
+							{if (isset($Ranking)) && (count($Ranking) === 3)}
+							<article class="podium pos-2 startState">
+								<figure class="podium-pic">
+									<img src="{$Ranking[1].Pic}" />
+									<figcaption>{$Ranking[1].Nick}</figcaption>
+								</figure>
+								<div class="step">
+									<strong>#2</strong>
+									{$Ranking[1].Score} points
+								</div>
+							</article>
+							<article class="podium pos-1 startState">
+								<figure class="podium-pic">
+									<img src="{$Ranking[0].Pic}" />
+									<figcaption>{$Ranking[0].Nick}</figcaption>
+								</figure>
+								<div class="step">
+									<strong>2</strong>
+									{$Ranking[0].Score} points
+								</div>
+							</article>
+							<article class="podium pos-3 startState">
+								<figure class="podium-pic">
+									<img src="{$Ranking[2].Pic}" />
+									<figcaption>{$Ranking[2].Nick}</figcaption>
+								</figure>
+								<div class="step">
+									<strong>#3</strong>
+									{$Ranking[2].Score} points
+								</div>
+							</article>
 
-					{if (isset($Ranking)) && (count($Ranking) === 3)}
-					<article class="podium pos-2 startState">
-						<figure class="podium-pic">
-							<img src="{$Ranking[1].Pic}" />
-							<figcaption>{$Ranking[1].Nick}</figcaption>
-						</figure>
-						<div class="step">
-							<strong>#2</strong>
-							{$Ranking[1].Score} points
+							{else}
+							Pas encore de classement
+							{/if}
 						</div>
-					</article>
-					<article class="podium pos-1 startState">
-						<figure class="podium-pic">
-							<img src="{$Ranking[0].Pic}" />
-							<figcaption>{$Ranking[0].Nick}</figcaption>
-						</figure>
-						<div class="step">
-							<strong>2</strong>
-							{$Ranking[0].Score} points
+						<div>
+							<h1>Classement</h1>
+							{if isset($RankingTable)}
+							{foreach from=$RankingTable item=rt}
+								<a class="rank-pos" href="#stats-title" onClick="loadPlayerStatistics({$rt['id']}, '{$rt['nick']}');"><span class="rank-pos-position">#{$rt['pos']}</span> <span class="rank-pos-nick">{$rt['nick']}</span> <span class="rank-pos-score">{$rt['score']} points</span> ({$rt['nbGamesEnded']} parties terminées, {$rt['nbGamesPending']} en cours)</a>
+							{/foreach}
+							{else}
+							Pas encore de classement
+							{/if}
 						</div>
-					</article>
-					<article class="podium pos-3 startState">
-						<figure class="podium-pic">
-							<img src="{$Ranking[2].Pic}" />
-							<figcaption>{$Ranking[2].Nick}</figcaption>
-						</figure>
-						<div class="step">
-							<strong>#3</strong>
-							{$Ranking[2].Score} points
+						<div>
+							<h1>Classement global</h1>
+							{if isset($GlobalRankingTable)}
+							{foreach from=$GlobalRankingTable item=rt}
+								<a class="rank-pos" href="#stats-title" onClick="loadPlayerStatistics({$rt['id']}, '{$rt['nick']}');"><span class="rank-pos-position">#{$rt['pos']}</span> <span class="rank-pos-nick">{$rt['nick']}</span> <span class="rank-pos-score">{$rt['score']} points</span> ({$rt['nbGamesWin']} parties gagnées pour {$rt['nbGamesEnded']} jouées)</a>
+							{/foreach}
+							{else}
+							Pas encore de classement
+							{/if}
 						</div>
-					</article>
-
-					{if isset($OutOfRank)}
-					<footer id="outOfRanking">
-						<strong>Votre position:</strong> {$OutOfRank}
-					</footer>
-					{/if}
-
-					{else}
-					Pas encore de classement
-					{/if}
+						<div>
+							<h1>Joueur du mois</h1>
+							{if isset($PlayerOfTheMonth)}
+							<img class="rank-playerOfTheMonth-pic" src="{$PlayerOfTheMonth['pic']}" />
+							<p class="rank-playerOfTheMonth-text">Le joueur du mois est <strong>{$PlayerOfTheMonth['nick']}</strong> avec {$PlayerOfTheMonth['score']} points</p>
+							<p class="rank-playerOfTheMonth-text">Félicitations !</p>
+							{else}
+							Pas de joueur du mois pour le moment
+							{/if}
+						</div>
+					</div>
 
 				</section>
 
 				<!-- Statistiques -->
-				{if isset($RankingPie) || isset($RankingEvolution)}
 				<section id="stats">
-					<h1>Statistiques</h1>
+					<h1 id="stats-title">Statistiques</h1>
 
-					
-					{if isset($RankingPie)}
-					<article class="stat-container stat-container-pie">
-						<header>Mes scores</header>
-						<figure class="stat-entity">
-							<canvas id="canvas-ranking-pie" height="175" width="175"></canvas>
-							<figcaption>{$RankingPie.legend}</figcaption>
-						</figure>
-						<script>
-							var pieData = [{$RankingPie.values}];
-							var canvasRankingPie = new Chart(document.getElementById("canvas-ranking-pie").getContext("2d")).Pie(pieData);
-						</script>
-					</article>
+					<div id="owl-stat-slider" class="owl-carousel">
+						{if isset($RankingPie) || isset($RankingEvolution) || isset($ColorPie)}
+						
+							{if isset($RankingPie)}
+							<article class="stat-container stat-container-pie">
+								<header>Classement</header>
+								<figure class="stat-entity">
+									<canvas id="canvas-ranking-pie" height="175" width="175"></canvas>
+									<figcaption>{$RankingPie.legend}</figcaption>
+								</figure>
+								<script>
+									var canvasRankingPie = new Chart(document.getElementById("canvas-ranking-pie").getContext("2d")).Pie({$RankingPie.values});
+								</script>
+							</article>
+							{/if}
+							
+						
+							{if isset($RankingEvolution)}
+							<article class="stat-container stat-container-line">
+								<header>Ratio de victoires</header>
+								<figure class="stat-entity">
+									<canvas id="canvas-ranking-evol" height="200" width="465"></canvas>
+								</figure>
+								<script>
+									var lineChartData = {
+											labels : {$RankingEvolution.label},
+											datasets : [
+												{
+													fillColor : "rgba(151,187,205,0.5)",
+													strokeColor : "rgba(151,187,205,1)",
+													pointColor : "rgba(151,187,205,1)",
+													pointStrokeColor : "#fff",
+													data : {$RankingEvolution.values}
+												}
+											]
+										};
+
+									var RankingEvolution = new Chart(document.getElementById("canvas-ranking-evol").getContext("2d")).Line(lineChartData);
+								</script>
+							</article>
+							{/if}
+
+							{if isset($ColorPie)}
+							<article class="stat-container stat-container-pie">
+								<header>Couleur favorite</header>
+								<figure class="stat-entity">
+									<canvas id="canvas-color-pie" height="175" width="175"></canvas>
+								</figure>
+								<script>
+									var cPieData = {$ColorPie};
+									var canvasColorRankingPie = new Chart(document.getElementById("canvas-color-pie").getContext("2d")).Pie(cPieData);
+								</script>
+							</article>
+							{/if}
+						
+					{else}
+						<div>Vos statistiques apparaitront ici après quelques combats !</div>					
 					{/if}
-					
-					{if isset($RankingEvolution)}
-					<article class="stat-container stat-container-line">
-						<header>Ratio de victoires</header>
-						<figure class="stat-entity">
-							<canvas id="canvas-ranking-evol" height="200" width="600"></canvas>
-						</figure>
-						<script>
-							var lineChartData = {
-									labels : [{$RankingEvolution.label}],
-									datasets : [
-										{
-											fillColor : "rgba(151,187,205,0.5)",
-											strokeColor : "rgba(151,187,205,1)",
-											pointColor : "rgba(151,187,205,1)",
-											pointStrokeColor : "#fff",
-											data : [{$RankingEvolution.values}]
-										}
-									]
-								};
-
-							var RankingEvolution = new Chart(document.getElementById("canvas-ranking-evol").getContext("2d")).Line(lineChartData);
-						</script>
-					</article>
-					{/if}
-
-
+					</div>					
+				
 				</section>
-				{/if}
 
 			</aside>
 
@@ -169,6 +213,30 @@
 						animation: 'blurIn'
 					});
 
+					// Plugin slider statistiques
+					$('#owl-rank-slider').owlCarousel({
+						/*navigation : true,*/
+						slideSpeed : 300,
+						paginationSpeed : 400,
+						singleItem: true,
+						autoHeight : true,
+						transitionStyle : 'goDown'
+					});
+
+					// Si des stats sont a afficher
+					if ($('#stats')) {
+						$('#owl-stat-slider').owlCarousel({
+							/*navigation : true,*/
+							slideSpeed : 300,
+							paginationSpeed : 400,
+							singleItem: true,
+							autoHeight : true,
+							transitionStyle : 'backSlide',
+							autoPlay : 5000,
+							stopOnHover : true
+						});
+					}
+
 					// Afficher les parties en cours
 					var gameList, podium,
 						i = 0;
@@ -195,8 +263,12 @@
 						if (podium[i].classList)
 							podium[i].classList.remove('startState');
 
+
+
 					/* TEMP: Sereur messages */
-					displayMessage('Pour voir le détail de la mise à jour, <a href="info.php#infos">c\'est ici !</a><br/>N\'oubliez pas de ctrl-F5 ;)', 'Grosse mise à jour !');
+					displayMessage('Félicitations à Hugues pour sa première place ! (Gros fourbe)', 'Joueur du mois');
+
+					displayMessage("Vous ne l'attendiez plus, mais la voilà: la mise à jour des statistiques !<br/>Vous pouvez maintenant voir les stats des gens ainsi que le classement du mois, le global et plein d'autres choses encore ;)", 'Mise à jour !');
 					/* /TEMP: Sereur messages */
 				});
 

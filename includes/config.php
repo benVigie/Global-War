@@ -1,6 +1,7 @@
 <?php
 
 	require_once('libs/Smarty.class.php');
+	require_once("libs/phpfastcache/php_fast_cache.php");
 	
 	// Init Smarty and start session
 	$smt = new Smarty();

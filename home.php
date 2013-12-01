@@ -46,11 +46,21 @@
 	$podium = $stats->GetPodium();
 	if (!is_null($podium))
 		$smt->assign('Ranking', $podium);
-	$pos = $stats->GetPlayerRank();
-	if (!is_null($pos))
-		$smt->assign('OutOfRank', $pos);
+	
+	// Get Ranking table
+	$rqtbl = $stats->GetRankingTable();
+	if (!is_null($rqtbl))
+		$smt->assign('RankingTable', $rqtbl);
+	// Get global ranking table
+	$grqtbl = $stats->GetGlobalRankingTable();
+	if (!is_null($grqtbl))
+		$smt->assign('GlobalRankingTable', $grqtbl);
+	// Get player of the month
+	$potm = $stats->GetPlayerOfTheMonth();
+	if (!is_null($potm))
+		$smt->assign('PlayerOfTheMonth', $potm);
 
-	// Recuperation du classement du joueur
+	// Recuperation des stats du joueur
 	$rankingPie = $stats->GetRankingPie();
 	if (!is_null($rankingPie))
 		$smt->assign('RankingPie', $rankingPie);
@@ -58,6 +68,10 @@
 	$rankingEvolution = $stats->GetRankingEvolution();
 	if (!is_null($rankingEvolution))
 		$smt->assign('RankingEvolution', $rankingEvolution);
+
+	$colorPie = $stats->GetPlayerFavoriteColorsPie();
+	if (!is_null($colorPie))
+		$smt->assign('ColorPie', $colorPie);
 
 
 	// Chargement d'informatiosn basiques

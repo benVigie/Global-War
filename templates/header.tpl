@@ -29,6 +29,9 @@
 		{if $Page === 'home.tpl'}
 		<script type="text/javascript" src="js/home.js"></script>
 		<script type="text/javascript" src="js/chart/Chart.min.js"></script>
+		<script type="text/javascript" src="js/carousel/owl.carousel.min.js"></script>
+		<link rel="stylesheet" href="js/carousel/owl.carousel.css" type="text/css" />
+		<link rel="stylesheet" href="js/carousel/owl.theme.css" type="text/css" />
 		{/if}
 		
 		{if $Page === 'game.tpl'}

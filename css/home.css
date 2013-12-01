@@ -330,12 +330,15 @@ h1 {
 	padding: 0;
 
 	text-align: center;
+	overflow: hidden;
 }
 .stat-entity span {
 	padding-left: 4px;
 	margin-left: 5px;
 }
-
+#canvas-color-pie {
+	opacity: 0.6;
+}
 
 
 /*-----------------------
@@ -778,12 +781,6 @@ h1 {
 	position: relative;
 }
 
-#outOfRanking {
-	font-size: 1.2em;
-	opacity: 0.7;
-	margin-top: 15px;
-}
-
 
 
 /*
@@ -875,3 +872,43 @@ h1 {
 	line-height: 1.8em;
 	margin-bottom: 15px;
 }
+
+
+
+/*
+|	Classement
+*/
+.rank-pos {
+	display: block;
+	font-size: 1.2em;
+	margin-bottom: 10px;
+}
+.rank-pos-position {
+	font-family: CPMono;
+	font-size: 1.2em;
+	margin-right: 5px;
+}
+.rank-pos-nick {
+	display: inline-block;
+	width: 100px;
+	margin-right: 5px;
+	font-size: 1.1em;
+	color: #2B6893;
+}
+.rank-pos-score {
+	display: inline-block;
+	width: 85px;
+}
+
+.rank-playerOfTheMonth-pic {
+	display: block;
+	margin: 25px auto 15px auto;
+	border-radius: 50%;
+	border: 2px solid #2B6894;
+}
+.rank-playerOfTheMonth-text {
+	text-align: center;
+	font-size: 1.4em;
+	margin-top: 10px;
+}
+.rank-playerOfTheMonth-text strong { color: #2B6894; }

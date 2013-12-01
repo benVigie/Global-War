@@ -1,6 +1,8 @@
 <?php
 
 	require_once ('mail.php');
+	require_once ('statistics.php');
+	require_once ('user.php');
 
 	/**
 	* 	GameManager fait tourner le jeu. Il s'occupe de la création, du déroulement et de tout ce qui touche aux mécaniques de jeu.
@@ -119,6 +121,10 @@
 															'youStart' => (($p == $firstOne) ? true : false)));
 				}
 			}
+
+			// 8 - On rafraichit le nombre de parties en cours
+			$stats = new Statistics($this->_db, 0);
+			$stats->RefreshRankingTable();
 			
 			return ($game_id);
 		}
@@ -946,11 +952,15 @@
 					// Cloture le joueur courant en le marquant comme gagnant
 					$this->closeGameForPlayer($_SESSION['user-id']);
 
+					// Merci-au-revoir
+					$this->endThisGameInDB();
+
 					// Set points
 					$this->updateScore();
 
-					// Merci-au-revoir
-					$this->endThisGameInDB();
+					// Update rank cache
+					$stats = new Statistics($this->_db, 0);
+					$stats->UpdateRanking();
 
 					return (true);
 				}
@@ -1025,6 +1035,9 @@
 			$points = 0;
 			$totalPlayers = 0;
 			$isCurrentPeriod = $this->isThisGameInCurrentPeriod();
+			
+			// Prepare stat class to update player statistics
+			$stats = new Statistics($this->_db, 0);
 
 			// Retreive players ranking
 			$podium = $this->_db->GetRows("SELECT `players_in_games`.`pig_player` AS `ID`, `players_in_games`.`pig_player_status` AS `POS` FROM `players_in_games` WHERE `players_in_games`.`pig_game` = '$this->_gameID'");
@@ -1062,13 +1075,16 @@
 					// Update player score in DB
 					$query = "UPDATE `players` SET `player_global_score` = `player_global_score` + $points";
 					
-					// Si la partie compte pour la période courante, update du score courant du joueur
+					// If the game was created under the current period, update score too
 					if ($isCurrentPeriod)
 						$query .= ", `player_score` = `player_score` + $points";
 					$query .= " WHERE `players`.`player_id` = '" . $p['ID'] . "'";
 					
 					// Update in DB
 					$this->_db->Execute($query);
+
+					// Finnally update player statistics
+					$stats->UpdatePlayerStats($p['ID']);
 				}
 
 			}

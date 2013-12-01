@@ -1,4 +1,5 @@
 <?php
+	require_once("../libs/phpfastcache/php_fast_cache.php");
 
 	session_start();
 

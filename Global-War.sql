@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le : Dim 17 Novembre 2013 à 13:19
+-- Généré le : Dim 01 Décembre 2013 à 18:43
 -- Version du serveur: 5.5.20
 -- Version de PHP: 5.3.10
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `boards` (
   `board_units` int(11) NOT NULL,
   `board_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`board_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=873 ;
 
 -- --------------------------------------------------------
 
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   `chat_message` text NOT NULL,
   `chat_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`chat_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `games` (
   `game_start_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `game_end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`game_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1320 ;
 
 -- --------------------------------------------------------
 
@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `games` (
 CREATE TABLE IF NOT EXISTS `game_periods` (
   `gp_start_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `gp_player_of_the_previous_period` int(11) NOT NULL,
+  `gp_player_points` int(11) NOT NULL,
   PRIMARY KEY (`gp_start_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -97,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `player_available` tinyint(4) NOT NULL,
   `player_inscription` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`player_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -136,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `strokes` (
   `stroke_infos_dest` varchar(8) NOT NULL,
   `stroke_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`stroke_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=356 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
