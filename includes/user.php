@@ -87,7 +87,7 @@
 				$game = array('id' => $g['game_id'], 'current' => $g['game_current_player'], 'started' => FormatDate($g['Date']));
 
 				// On recupere les noms des opposants pour les integrer dans l'UI
-				$query = "SELECT `players`.`player_nick` AS `Nick`, `players`.`player_id` AS `ID`, `players_in_games`.`pig_color` AS `Color` FROM `players_in_games` JOIN `players` ON `players`.`player_id` = `players_in_games`.`pig_player` WHERE `players_in_games`.`pig_game` = '$g[game_id]' ORDER BY `players_in_games`.`pig_order` ASC";
+				$query = "SELECT `players`.`player_nick` AS `Nick`, `players`.`player_id` AS `ID`, `players_in_games`.`pig_color` AS `Color`, `players_in_games`.`pig_player_status` AS `Status` FROM `players_in_games` JOIN `players` ON `players`.`player_id` = `players_in_games`.`pig_player` WHERE `players_in_games`.`pig_game` = '$g[game_id]' ORDER BY `players_in_games`.`pig_order` ASC";
 				$opponents = $this->_db->GetRows($query);
 				$op_str = '';
 				if (!is_null($opponents)) {

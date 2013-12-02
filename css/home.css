@@ -160,12 +160,25 @@ h1 {
 	font-weight: bold;
 	opacity: 0.6;
 }
+.opponent-pic-box {
+	position: relative;
+	display: inline-block;
+	margin: 0;
+}
 .opponent-mini-pic {
 	width: 30px;
 	border-radius: 4px;
 	border: 3px solid grey;
 	opacity: 0.5;
 	margin: 5px;
+}
+.opponent-dead-pic {
+	width: 25px;
+	position: absolute;
+	left: 10px;
+	opacity: 0.7;
+	top: 10px;
+
 }
 .his-turn {
 	opacity: 1;

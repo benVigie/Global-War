@@ -12,7 +12,12 @@
 							Depuis {$g.started}
 							<br/>
 							{foreach from=$g.players item=p}
-							<img class="opponent-mini-pic {if $p.ID == $g.current}his-turn{/if}" src="{$p.Pic}" style="border-color: {$p.Color}" />
+							<figure class="opponent-pic-box">
+								<img class="opponent-mini-pic {if $p.ID == $g.current}his-turn{/if}" src="{$p.Pic}" style="border-color: {$p.Color}" />
+								{if $p.Status != 'alive'}
+								<img class="opponent-dead-pic" src="images/dead.png" />
+								{/if}
+								</figure>
 							{/foreach}
 							<span class="stopGame" onClick="return (stopGame({$g.id}));">A</span>
 						</article>
@@ -266,9 +271,7 @@
 
 
 					/* TEMP: Sereur messages */
-					displayMessage('Félicitations à Hugues pour sa première place ! (Gros fourbe)', 'Joueur du mois');
-
-					displayMessage("Vous ne l'attendiez plus, mais la voilà: la mise à jour des statistiques !<br/>Vous pouvez maintenant voir les stats des gens ainsi que le classement du mois, le global et plein d'autres choses encore ;)", 'Mise à jour !');
+					/*displayMessage('Félicitations à Hugues pour sa première place ! (Gros fourbe)', 'Joueur du mois');*/
 					/* /TEMP: Sereur messages */
 				});
 
