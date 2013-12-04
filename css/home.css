@@ -176,7 +176,7 @@ h1 {
 	width: 25px;
 	position: absolute;
 	left: 10px;
-	opacity: 0.7;
+	opacity: 0.9;
 	top: 10px;
 
 }
@@ -344,7 +344,9 @@ h1 {
 
 	text-align: center;
 	overflow: hidden;
+	width: 100%;
 }
+.stat-entity > canvas { width: 100%; }
 .stat-entity span {
 	padding-left: 4px;
 	margin-left: 5px;
@@ -401,7 +403,7 @@ h1 {
 	display: inline-block;
 	top: 0;
 	right: 0;
-	padding: 2px 5px;
+	padding: 2px 8px;
 
 	font-family: IcoMoon;
 	-webkit-transform: rotateY(0deg);
@@ -413,6 +415,7 @@ h1 {
 	-moz-transition: opacity 200ms linear, -moz-transform 600ms linear;
 	transition: opacity 200ms linear, transform 600ms linear;
 	cursor: pointer;
+	text-align: right;
 }
 
 .colorWindow {
@@ -428,7 +431,7 @@ h1 {
 	transition: opacity 200ms ease, top 200ms ease;
 }
 .colorWindow.active {
-	top: 110px;
+	top: 73px;
 	opacity: 1;
 }
 .colorWindowPanel0 { left: 10%; }
@@ -466,11 +469,19 @@ h1 {
 	margin-top: 1px;
 }
 
-#PlayersInGame section.myPlayerPanel:hover > aside {
-	-webkit-transform: rotateY(720deg);
+#PlayersInGame section.myPlayerPanel > aside {
+	/*-webkit-transform: rotateY(720deg);
 	-moz-transform: rotateY(720deg);
-	transform: rotateY(720deg);
+	transform: rotateY(720deg);*/
+	animation-duration: 8s;
+  	animation-name: dropDance;
+  	animation-iteration-count: infinite;
+	-webkit-animation-duration: 8s;
+  	-webkit-animation-name: dropDance;
+  	-webkit-animation-iteration-count: infinite;
+	
 	opacity: 1;
+	width: 40px;
 }
 
 #PlayersInGame section img {
@@ -900,6 +911,8 @@ h1 {
 	font-family: CPMono;
 	font-size: 1.2em;
 	margin-right: 5px;
+	display: inline-block;
+	width: 35px;
 }
 .rank-pos-nick {
 	display: inline-block;
@@ -925,3 +938,31 @@ h1 {
 	margin-top: 10px;
 }
 .rank-playerOfTheMonth-text strong { color: #2B6894; }
+
+
+@keyframes dropDance {
+  0% { right: 0; }
+  50% { right: 0; }
+  51% { right: -8px; }
+  52% { right: 0; }
+  53% { right: 8px; }
+  54% { right: 0px; }
+  55% { right: -4px; }
+  56% { right: 0; }
+  57% { right: 4px; }
+  58% { right: 0; }
+  100% { right: 0; }
+}
+@-webkit-keyframes dropDance {
+  0% { right: 0; }
+  50% { right: 0; }
+  51% { right: -8px; }
+  52% { right: 0; }
+  53% { right: 8px; }
+  54% { right: 0px; }
+  55% { right: -4px; }
+  56% { right: 0; }
+  57% { right: 4px; }
+  58% { right: 0; }
+  100% { right: 0; }
+}

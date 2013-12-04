@@ -657,15 +657,19 @@
 
 
 		/**
-		*	Retourne un tableau de toute les couleurs disponibles pour ce jeu (== non prises par les autres joueurs)
+		*	Return an array of available colors for this game (aka colors not yet choosen by players)
 		*
-		*	@return {Array} Un tableau de String contenant les codes couleurs
+		*	@return {Array} String array of color code in Hexa format
 		*/
 		public function GetAvailablesColors() {
-			$colors = array('#da0e00','#176bce','#851de3','#08b207','#F3602C');
+			$colors = array('#fc1000','#217be6','#9933FF','#09c208','#F3602C', '#f88', '#D9D335');
 			$availables = array();
 			$available = true;
 
+			// Shuffle colors 
+			shuffle($colors);
+			
+			// Retreive colors already used by players
 			$taken = $this->_db->GetRows("SELECT `players_in_games`.`pig_color` FROM `players_in_games` WHERE `players_in_games`.`pig_game` = '$this->_gameID'");
 			if (is_null($taken))
 				return ($colors);

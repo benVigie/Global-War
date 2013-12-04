@@ -124,7 +124,7 @@
 									<figcaption>{$RankingPie.legend}</figcaption>
 								</figure>
 								<script>
-									var canvasRankingPie = new Chart(document.getElementById("canvas-ranking-pie").getContext("2d")).Pie({$RankingPie.values});
+									new Chart(document.getElementById("canvas-ranking-pie").getContext("2d")).Pie({$RankingPie.values});
 								</script>
 							</article>
 							{/if}
@@ -134,23 +134,29 @@
 							<article class="stat-container stat-container-line">
 								<header>Ratio de victoires</header>
 								<figure class="stat-entity">
-									<canvas id="canvas-ranking-evol" height="200" width="465"></canvas>
+									<canvas id="canvas-ranking-evol" height="200"></canvas>
 								</figure>
 								<script>
-									var lineChartData = {
-											labels : {$RankingEvolution.label},
-											datasets : [
-												{
-													fillColor : "rgba(151,187,205,0.5)",
-													strokeColor : "rgba(151,187,205,1)",
-													pointColor : "rgba(151,187,205,1)",
-													pointStrokeColor : "#fff",
-													data : {$RankingEvolution.values}
-												}
-											]
-										};
+										window.setTimeout(function() {
+											// Set dynamic size to canvas to cover a large number of screen sizes
+											$('#canvas-ranking-evol').attr('width', $('#owl-stat-slider').width());
 
-									var RankingEvolution = new Chart(document.getElementById("canvas-ranking-evol").getContext("2d")).Line(lineChartData);
+											var lineChartData = {
+													labels : {$RankingEvolution.label},
+													datasets : [
+														{
+															fillColor : "rgba(151,187,205,0.5)",
+															strokeColor : "rgba(151,187,205,1)",
+															pointColor : "rgba(151,187,205,1)",
+															pointStrokeColor : "#fff",
+															data : {$RankingEvolution.values}
+														}
+													]
+												};
+
+											new Chart(document.getElementById("canvas-ranking-evol").getContext("2d")).Line(lineChartData);
+										}, 250);
+									
 								</script>
 							</article>
 							{/if}

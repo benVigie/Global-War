@@ -349,7 +349,7 @@
 			$quotes[] = '"Je veux simplement que vous compreniez que lorsque nous parlons de guerre, nous parlons vraiment de paix."<br/>- George W. Bush';
 			$quotes[] = '"En temps de paix, les fils ensevelissent leurs pères ; en temps de guerre, les pères ensevelissent leurs fils. "<br/>- Herodote';
 			$quotes[] = '"La guerre, c’est la guerre des hommes ; la paix, c’est la guerre des idées."<br/>- Victor Hugo';
-			$quotes[] = '"Les guerres, ce sont d"es gens qui ne se connaissent pas et qui s’entretuent parce que d’autres gens qui se connaissent très bien ne parviennentas à se mettre d’accord."<br/>- Paul Valéry';
+			$quotes[] = '"Les guerres, ce sont des gens qui ne se connaissent pas et qui s’entretuent parce que d’autres gens qui se connaissent très bien ne parviennent pas à se mettre d’accord."<br/>- Paul Valéry';
 			$quotes[] = '"La victoire a cent pères, mais la défaite est orpheline. "<br/>- John Fitzgerald Kennedy';
 			$quotes[] = '"Engagez-vous dans l’armée ! Venez rencontrer des gens passionnants... et tuez-les !"<br/>- Jean-Loup Chiflet';
 			$quotes[] = '"Le pouvoir est au bout du fusil"<br/>- Mao Tse-Toung';

@@ -182,7 +182,8 @@ function 	onPlayerStatisicsReceived(data) {
 	var slider = $('#owl-stat-slider'),
 		owl = $('#owl-stat-slider').data('owlCarousel'),
 		nbElems,
-		chartData;
+		chartData,
+		size = slider.width();
 	
 	// Remove items in caroussel
 	nbElems = owl.owl.owlItems.length;
@@ -195,7 +196,7 @@ function 	onPlayerStatisicsReceived(data) {
 		owl.addItem('<article class="stat-container stat-container-pie"><header>Classement</header><figure class="stat-entity"><canvas id="canvas-ranking-pie" height="175" width="175"></canvas><figcaption>' + data.RankingPie.legend + '</figcaption></figure></article>');
 	}
 	if (data.RankingEvolution) {
-		owl.addItem('<article class="stat-container stat-container-line"><header>Ratio de victoires</header><figure class="stat-entity"><canvas id="canvas-ranking-evol" height="200" width="465"></canvas></figure></article>');
+		owl.addItem('<article class="stat-container stat-container-line"><header>Ratio de victoires</header><figure class="stat-entity"><canvas id="canvas-ranking-evol" height="200" width="' + size + '"></canvas></figure></article>');
 	}
 	if (data.ColorPie) {
 		owl.addItem('<article class="stat-container stat-container-pie"><header>Couleur favorite</header><figure class="stat-entity"><canvas id="canvas-color-pie" height="175" width="175"></canvas></figure></article>');
@@ -224,7 +225,6 @@ function 	onPlayerStatisicsReceived(data) {
 			new Chart(document.getElementById("canvas-ranking-evol").getContext("2d")).Line(lineChartData);
 		}
 		if (data.ColorPie) {
-			debugger
 			chartData = JSON.parse(data.ColorPie);
 			new Chart(document.getElementById("canvas-color-pie").getContext("2d")).Pie(chartData);
 		}

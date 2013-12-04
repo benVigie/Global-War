@@ -3,7 +3,7 @@
 
 			<!-- Liste et infos des joueurs -->
 			<h1>Joueurs</h1>
-			<div class="-dropdown -primary- _top_ colorWindow">
+			<div class="-dropdown -primary- _top_ colorWindow" style="min-height: 30px;">
 				<div class="-arrow"></div>
 				<div class="colorBox" onClick="changeColorTo('#875643');"><span style="background: #875643"> </span></div>
 				<div class="colorBox" onClick=""><span > </span></div>
@@ -174,6 +174,8 @@
 							for (var i in data.colors) {
 								colorBox.innerHTML += '<div class="colorBox" onClick="changeColorTo(\'' + data.colors[i] + '\');"><span style="background: ' + data.colors[i] + '"> </span></div>';
 							}
+
+							colorBox.style.top = (190 - (30 * (data.colors.length - 1))) + 'px';
 						}
 					});
 
