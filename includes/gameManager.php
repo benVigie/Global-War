@@ -662,7 +662,14 @@
 		*	@return {Array} String array of color code in Hexa format
 		*/
 		public function GetAvailablesColors() {
-			$colors = array('#fc1000','#217be6','#9933FF','#09c208','#F3602C', '#f88', '#D9D335');
+			$colors = array('#fc1000',	// Red
+							'#3498db',	// Blue
+							'#9b59b6',	// Purple
+							'#27ae60',	// Green
+							'#e67e22',	// Orange
+							'#ecf0f1',	// White
+							'#f1c40f',	// Yellow
+							'#34495e');	// Dark
 			$availables = array();
 			$available = true;
 
@@ -1038,7 +1045,6 @@
 		private function updateScore() {
 			$points = 0;
 			$totalPlayers = 0;
-			$isCurrentPeriod = $this->isThisGameInCurrentPeriod();
 			
 			// Prepare stat class to update player statistics
 			$stats = new Statistics($this->_db, 0);
@@ -1077,12 +1083,7 @@
 					$points = ($totalPlayers - $pos) - ($pos - 1);
 
 					// Update player score in DB
-					$query = "UPDATE `players` SET `player_global_score` = `player_global_score` + $points";
-					
-					// If the game was created under the current period, update score too
-					if ($isCurrentPeriod)
-						$query .= ", `player_score` = `player_score` + $points";
-					$query .= " WHERE `players`.`player_id` = '" . $p['ID'] . "'";
+					$query = "UPDATE `players` SET `player_global_score` = `player_global_score` + $points, `player_score` = `player_score` + $points WHERE `players`.`player_id` = '" . $p['ID'] . "'";
 					
 					// Update in DB
 					$this->_db->Execute($query);

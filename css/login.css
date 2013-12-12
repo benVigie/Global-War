@@ -1,3 +1,11 @@
+@font-face {
+	font-family: 'MenuFont';
+	src: url('../fonts/fontMenu/fontawesome.eot');
+	src: url('../fonts/fontMenu/fontawesome.woff') format('woff'),
+			url('../fonts/fontMenu/fontawesome.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
 #loginContainer {
 	width: 100%;
@@ -77,3 +85,42 @@
 #loginWrapper form:first-child { z-index: 3; }
 #loginWrapper form:last-child { z-index: 2; }
 #loginWrapper.flipped form:first-child { z-index: 1; }
+
+#remember-box {
+	margin-top: 9px;
+	text-align: left;
+	padding-left: 4px;
+	font-size: 12px;
+	color: #858585;
+	cursor: pointer;
+	opacity: 0.8;
+	overflow: hidden;
+	height: 0;
+
+	-webkit-transition: height 300ms ease;
+}
+
+#remember-box.reveal { height: 25px; }
+
+#remember-icon {
+	font-family: 'MenuFont';
+	margin-right: 5px;
+	font-size: 1.2em;
+
+	-webkit-transition: color 300ms ease, -webkit-transform 300ms ease;
+	-moz-transition: color 300ms ease, -moz-transform 300ms ease;
+	transition: color 300ms ease, transform 300ms ease;
+	
+	opacity: 0.6;
+}
+#remember-icon:after { content: ''; }
+
+
+#remember-icon.remember-select {
+	color: darkseagreen;
+	-webkit-transform: rotateY(360deg);
+	-moz-transform: rotateY(360deg);
+	transform: rotateY(360deg);
+	opacity: 1;
+}
+#remember-icon.remember-select:after { content: ''; }

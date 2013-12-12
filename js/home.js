@@ -196,7 +196,7 @@ function 	onPlayerStatisicsReceived(data) {
 		owl.addItem('<article class="stat-container stat-container-pie"><header>Classement</header><figure class="stat-entity"><canvas id="canvas-ranking-pie" height="175" width="175"></canvas><figcaption>' + data.RankingPie.legend + '</figcaption></figure></article>');
 	}
 	if (data.RankingEvolution) {
-		owl.addItem('<article class="stat-container stat-container-line"><header>Ratio de victoires</header><figure class="stat-entity"><canvas id="canvas-ranking-evol" height="200" width="' + size + '"></canvas></figure></article>');
+		owl.addItem('<article class="stat-container stat-container-line"><header>Ratio de victoires</header><figure class="stat-entity"><canvas id="canvas-ranking-evol" height="250" width="' + size + '"></canvas></figure></article>');
 	}
 	if (data.ColorPie) {
 		owl.addItem('<article class="stat-container stat-container-pie"><header>Couleur favorite</header><figure class="stat-entity"><canvas id="canvas-color-pie" height="175" width="175"></canvas></figure></article>');
@@ -231,4 +231,9 @@ function 	onPlayerStatisicsReceived(data) {
 
 	}, 200);
 	
+}
+
+function showEndedGames() {
+	document.querySelector('.gamesLost').classList.toggle('gamesLost-show');
+	document.querySelector('#lostGameShowButton').classList.toggle('game-btn-pressed');
 }

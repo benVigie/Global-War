@@ -1,12 +1,12 @@
 {include file='header.tpl'}
 
 			<section id="main-content">
-				<h1>Parties en cours</h1>
-				<div id="games">
+				<h1>Parties en cours {if isset($GamesLost)}<img id="lostGameShowButton" onClick="showEndedGames();" src="images/dead.png" />{/if}</h1>
+				<div class="games">
 					{if isset($Games)}
 					{foreach from=$Games item=g}
 					<a href="game.php?game={$g.id}" class="game-hidden">
-					<!-- <a class="game-hidden"> -->
+					
 						<article class="{if $g.current == $User_id}is-my-turn{else}is-not-my-turn{/if}">
 							<header>Contre {$g.opponents}</header>
 							Depuis {$g.started}
@@ -25,6 +25,30 @@
 					{/foreach}
 					{else}
 					Aucune partie pour le moment. Créez-en une !
+					{/if}
+				</div>
+
+				<div class="games gamesLost">
+					<h1>Parties perdues</h1>
+					{if isset($GamesLost)}
+					{foreach from=$GamesLost item=g}
+					<a href="game.php?game={$g.id}" class="game-hidden">
+					
+						<article class="playerDeath">
+							<header>Contre {$g.opponents}</header>
+							Depuis {$g.started}
+							<br/>
+							{foreach from=$g.players item=p}
+							<figure class="opponent-pic-box">
+								<img class="opponent-mini-pic {if $p.ID == $g.current}his-turn{/if}" src="{$p.Pic}" style="border-color: {$p.Color}" />
+								{if $p.Status != 'alive'}
+								<img class="opponent-dead-pic" src="images/dead.png" />
+								{/if}
+								</figure>
+							{/foreach}
+						</article>
+					</a>
+					{/foreach}
 					{/if}
 				</div>
 
@@ -134,7 +158,7 @@
 							<article class="stat-container stat-container-line">
 								<header>Ratio de victoires</header>
 								<figure class="stat-entity">
-									<canvas id="canvas-ranking-evol" height="200"></canvas>
+									<canvas id="canvas-ranking-evol" height="250"></canvas>
 								</figure>
 								<script>
 										window.setTimeout(function() {
@@ -143,6 +167,7 @@
 
 											var lineChartData = {
 													labels : {$RankingEvolution.label},
+													scaleGridLineWidth : 5,
 													datasets : [
 														{
 															fillColor : "rgba(151,187,205,0.5)",

@@ -70,15 +70,57 @@
 		}
 
 		/**
-		*	Charge des infos basiques en $_SESSION et dans smarty si ce n'est pas deja fait, de maniere presque intelligente
+		*	Get all games for this player when he's still alive
+		*
 		*	@param:
-		*	@return: True si tout c'est bien passe, false sinon
+		*	@return: {Array} Array of games, which every entries have game's informations like players, colors, gameID, etc...
 		*/
 		public function 	GetCurrentGames() {
 			$res = array();
 			
 			// Récupération des parties en cours du joueur
 			$games = $this->_db->GetRows("SELECT `games`.`game_id`, `games`.`game_current_player`, UNIX_TIMESTAMP(`games`.`game_start_date`) AS `Date` FROM `games` JOIN `players_in_games` ON `players_in_games`.`pig_game` = `games`.`game_id` WHERE `games`.`game_status` = 'pending' AND `players_in_games`.`pig_player` = '$this->_userId' AND `players_in_games`.`pig_player_status` = 'alive'");
+			
+			if (is_null($games))
+				return (null);
+
+			foreach ($games as $g) {
+				$game = array('id' => $g['game_id'], 'current' => $g['game_current_player'], 'started' => FormatDate($g['Date']));
+
+				// On recupere les noms des opposants pour les integrer dans l'UI
+				$query = "SELECT `players`.`player_nick` AS `Nick`, `players`.`player_id` AS `ID`, `players_in_games`.`pig_color` AS `Color`, `players_in_games`.`pig_player_status` AS `Status` FROM `players_in_games` JOIN `players` ON `players`.`player_id` = `players_in_games`.`pig_player` WHERE `players_in_games`.`pig_game` = '$g[game_id]' ORDER BY `players_in_games`.`pig_order` ASC";
+				$opponents = $this->_db->GetRows($query);
+				$op_str = '';
+				if (!is_null($opponents)) {
+					foreach ($opponents as &$op) {
+						if ($op['ID'] !== $this->_userId)
+							$op_str .= (($op_str === '') ? '': ', ') . $op['Nick'];
+
+						$op['Pic'] = self::GetUserPicture($op['ID']);
+					}
+				}
+
+				$game['opponents'] = $op_str;
+				$game['players'] = $opponents;
+
+				// Ajout de la partie dans la liste des parties
+				$res[] = $game;
+			}
+
+			return ($res);
+		}
+
+		/**
+		*	Get all loose by the player but not yet ended
+		*
+		*	@param:
+		*	@return: {Array} Array of games, which every entries have game's informations like players, colors, gameID, etc...
+		*/
+		public function 	GetLostGamesAvailable() {
+			$res = array();
+			
+			// Récupération des parties en cours du joueur
+			$games = $this->_db->GetRows("SELECT `games`.`game_id`, `games`.`game_current_player`, UNIX_TIMESTAMP(`games`.`game_start_date`) AS `Date` FROM `games` JOIN `players_in_games` ON `players_in_games`.`pig_game` = `games`.`game_id` WHERE `games`.`game_status` = 'pending' AND `players_in_games`.`pig_player` = '$this->_userId' AND `players_in_games`.`pig_player_status` != 'alive'");
 			
 			if (is_null($games))
 				return (null);
@@ -123,6 +165,10 @@
 				unset($_SESSION['user-notif']);
 				unset($_SESSION['user-availability']);
 			}
+
+			// Remove cookies
+			setcookie("UserName");
+			setcookie("UserPass");
 		}
 
 		/**

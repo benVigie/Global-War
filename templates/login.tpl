@@ -25,8 +25,12 @@
 			<form method="post" action="index.php" id="login">
 				
 				<input type="text" name="nick" placeholder="Pseudo" class="loginUsername" />
-				<input type="password" name="password" placeholder="Mot de passe" class="loginPassword" />
-				
+				<input id="remember" type="checkbox" name="remember" value="on" style="display: none;" />
+				<input type="password" name="password" placeholder="Mot de passe" class="loginPassword" id="logPass" onkeyup="revealRemember()" />
+				<div id="remember-box" onClick="changeRememberState();">
+					<span id="remember-icon"></span> Se souvenir de moi !
+				</div>
+
 				<div class="logControl">
 					<!-- <input type="submit" name="submit" value="Connection" class="buttonM bBlue" /> -->
 					<a href="#" class="m-btn blue" onclick="login();">Connection</a>
@@ -66,6 +70,24 @@
 
 		function newAccount() {
 			document.querySelector('#newAccount').submit();
+		}
+
+		function changeRememberState() {
+			if ($('#remember').is(":checked")) {
+				$('#remember').attr("checked", false);
+			}
+			else {
+				$('#remember').attr("checked", true);
+			}
+
+			document.querySelector('#remember-icon').classList.toggle('remember-select');
+		}
+
+		function revealRemember() {
+			document.querySelector('#remember-box').classList.add('reveal');
+
+			// Remove event
+			$('#logPass').attr('onkeyup', '');
 		}
 	</script>
 

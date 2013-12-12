@@ -4,18 +4,31 @@
 	require_once ('includes/class.myBDD.php');
 	require_once ('includes/user.php');
 	require_once ('includes/statistics.php');
+	require_once ('includes/login.php');
 
+	// DB instance
+	$db = null;
 
-	// Si l'utilisateur est pas logue, on le redirige en page d'accueil (login)
+	// If user session has expired, we will try to log the user using cookies
 	if (!isset($_SESSION['user-id'])) {
-		header('Location: index.php');
+
+		// Open DB
+		$db = new myBDD();
+		if (!$db->connect())
+			header('Location: index.php');
+			
+		// Try to reconnect user by using cookies (if exist)
+		if (tryReloginWithCookie($db) !== true)
+			header('Location: index.php');
 	}
 
 	// Ouverture de la BDD
-	$db = new myBDD();
-	if (!$db->connect()) {
-		SetMessage('Impossible de se connecter &agrave; la BDD.', true);
-		Display('home.tpl', 'Home');
+	if (is_null($db)) {
+		$db = new myBDD();
+		if (!$db->connect()) {
+			SetMessage('Impossible de se connecter &agrave; la BDD.', true);
+			Display('home.tpl', 'Home');
+		}
 	}
 
 	// On recupere l'instance du joueur
@@ -41,6 +54,11 @@
 	$games = $currentUser->GetCurrentGames();
 	if (!is_null($games))
 		$smt->assign('Games', $games);
+
+	// Recuperation de la liste des parties
+	$gamesLost = $currentUser->GetLostGamesAvailable();
+	if (!is_null($gamesLost))
+		$smt->assign('GamesLost', $gamesLost);
 
 	// Recuperation du classement general
 	$podium = $stats->GetPodium();

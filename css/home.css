@@ -111,7 +111,30 @@ h1 {
 	overflow: hidden;
 }
 
-#games > a {
+#lostGameShowButton {
+	height: 20px;
+	margin-left: 35px;
+	position: absolute;
+	opacity: 0.3;
+	cursor: pointer;
+
+	-webkit-transition: opacity 200ms ease, -webkit-transform 400ms ease, opacity 400ms ease;
+	-moz-transition: opacity 200ms ease, -moz-transform 400ms ease, opacity 400ms ease;
+	transition: opacity 200ms ease, transform 400ms ease, opacity 400ms ease;
+}
+#lostGameShowButton:hover {
+	opacity: 0.8;
+}
+
+#lostGameShowButton.game-btn-pressed {
+	-webkit-transform: rotateY(360deg);
+	-moz-transform: rotateY(360deg);
+	transform: rotateY(360deg);
+
+	opacity: 0.6;
+}
+
+.games > a {
 	display: block;
 	position: relative;
 
@@ -131,14 +154,14 @@ h1 {
 	-moz-transition: -moz-transform 1s ease;
 	transition: transform 1s ease;
 }
-#games > a.game-hidden {
+.games > a.game-hidden {
 	-webkit-transform: rotateY(-100deg);
 	-moz-transform: rotateY(-100deg);
 	transform: rotateY(-100deg);
 }
 
-#games article {
-	border-left: 3px solid black;
+.games article {
+	border-left: 3px solid #34495e;
 	height: 85px;
 	margin-bottom: 10px;
 	padding: 5px 0 5px 15px;
@@ -147,14 +170,14 @@ h1 {
 	-moz-transition: background 200ms linear;
 	transition: background 200ms linear;
 }
-#games article:hover {
+.games article:hover {
 	background: rgba(211,211,211,0.5);
 	border-radius: 0 4px 4px 0;
 }
-#games article.is-my-turn { border-left: 3px solid mediumseagreen; }
-#games article.is-not-my-turn { border-left: 3px solid tomato; }
+.games article.is-my-turn { border-left: 3px solid mediumseagreen; }
+.games article.is-not-my-turn { border-left: 3px solid tomato; }
 
-#games article > header {
+.games article > header {
 	color: #525252;
 	font-size: 1.5em;
 	font-weight: bold;
@@ -202,17 +225,20 @@ h1 {
 	-moz-transition: right 400ms ease-out, background 200ms linear, color 200ms linear;
 	transition: right 400ms ease-out, background 200ms linear, color 200ms linear;
 }
-#games article:hover .stopGame{
+.games article:hover .stopGame{
 	right: -10px;
 	opacity: 0.4;
 }
 
-#games article:hover .stopGame:hover{
+.games article:hover .stopGame:hover{
 	right: 0;
 	color: white;
 	background: tomato;
 	opacity: 1;
 }
+
+.gamesLost { display: none; }
+.gamesLost.gamesLost-show { display: block; }
 
 
 /*
